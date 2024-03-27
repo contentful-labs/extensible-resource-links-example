@@ -7,7 +7,7 @@
       "path": "functions/TMDBResources.js",
       "entryFile": "functions/TMDBResources.ts",
       "allowNetworks": [],
-      "accepts": ["resources.search", "resources.lookup"]
+      "accepts": []
     }
   ]
 }
