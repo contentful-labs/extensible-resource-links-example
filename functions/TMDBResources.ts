@@ -11,8 +11,8 @@ import {
 type AppInstallationParameters = {
   storefrontAccessToken: string
 }
-const searchHandler = async (event: ResourcesSearchRequest, context: FunctionEventContext<AppInstallationParameters>): Promise<ResourcesSearchResponse> => {
-  const url = 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1';
+
+const fetchApi = async (url: string, context: FunctionEventContext<AppInstallationParameters>) => {
   const options = {
     method: 'GET',
     headers: {
@@ -32,31 +32,35 @@ const searchHandler = async (event: ResourcesSearchRequest, context: FunctionEve
       throw err
     });
 
-  return { items: result.results?.map(({id, ...rest}: any) => ({id: String(id), ...rest})) ?? [], pages: {}}
+  if(!result){
+    return {items: [], pages: {}}
+  }
+
+  if(Array.isArray( result.results)){
+    return {
+      items: result.results.map(({id, ...rest}: any) => ({id: String(id), ...rest})),
+      pages: {
+        nextCursor: result.total_pages > result.page ? String(result.page + 1) : undefined
+      }
+    }
+  }
+
+  return { items: [{...result, id: String(result.id)}], pages: {}}
+}
+
+const searchHandler = async (event: ResourcesSearchRequest, context: FunctionEventContext<AppInstallationParameters>): Promise<ResourcesSearchResponse> => {
+  let url = `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${event.pages?.nextCursor ?? 1}`;
+  if(event.query){
+    url = `https://api.themoviedb.org/3/search/movie?query=${event.query}&include_adult=false&language=en-US&page=${event.pages?.nextCursor ?? 1}`;
+  }
+
+  return fetchApi(url, context)
 };
 
 const lookupHandler = async (event: ResourcesLookupRequest, context: FunctionEventContext<AppInstallationParameters>): Promise<ResourcesLookupResponse> => {
   const url = `https://api.themoviedb.org/3/movie/${event.lookupBy.urns[0]}?language=en-US`;
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${context.appInstallationParameters.storefrontAccessToken}`
-    }
-  };
 
-  const result = await fetch(url, options)
-    .then((res: any) => res.json())
-    .then((json: any) => {
-      console.log(json)
-      return json
-    })
-    .catch((err: any) => {
-      console.error('error:' + err)
-      throw err
-    });
-
-  return { items: result ? [{...result, id: String(result.id)}] : [], pages: {}}
+  return fetchApi(url, context)
 };
 
 // @ts-expect-error ...
