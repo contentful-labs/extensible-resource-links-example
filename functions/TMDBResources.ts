@@ -12,6 +12,16 @@ type AppInstallationParameters = {
   storefrontAccessToken: string
 }
 
+const transformResult = (result: any) => {
+  return ({
+    ...result,
+    id: String(result.id),
+    image: {
+      url: `https://image.tmdb.org/t/p/w200${result.poster_path}`
+    },
+  })
+}
+
 const fetchApi = async (url: string, context: FunctionEventContext<AppInstallationParameters>) => {
   const options = {
     method: 'GET',
@@ -38,14 +48,14 @@ const fetchApi = async (url: string, context: FunctionEventContext<AppInstallati
 
   if(Array.isArray( result.results)){
     return {
-      items: result.results.map(({id, ...rest}: any) => ({id: String(id), ...rest})),
+      items: result.results.map(transformResult),
       pages: {
         nextCursor: result.total_pages > result.page ? String(result.page + 1) : undefined
       }
     }
   }
 
-  return { items: [{...result, id: String(result.id)}], pages: {}}
+  return { items: [transformResult(result)], pages: {}}
 }
 
 const searchHandler = async (event: ResourcesSearchRequest, context: FunctionEventContext<AppInstallationParameters>): Promise<ResourcesSearchResponse> => {
