@@ -38,6 +38,9 @@
     ]
   },
   "devDependencies": {
+    "@contentful/node-apps-toolkit": "^2.8.2",
+    "@tsconfig/recommended": "1.0.3",
+    "esbuild": "0.19.2",
     "@contentful/app-scripts": "1.17.0",
     "@testing-library/jest-dom": "5.17.0",
     "@testing-library/react": "14.2.2",
