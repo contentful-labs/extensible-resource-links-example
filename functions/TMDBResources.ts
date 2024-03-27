@@ -1,18 +1,23 @@
 import {FunctionEventHandler, FunctionEventType} from '@contentful/node-apps-toolkit';
 import {FunctionEventContext} from "@contentful/node-apps-toolkit/lib/requests/typings/function";
-import {ResourcesLookupRequest, ResourcesSearchRequest} from "./types";
+import {
+  ResourcesLookupRequest,
+  ResourcesLookupResponse,
+  ResourcesSearchRequest,
+  ResourcesSearchResponse
+} from "./types";
 
 
 type AppInstallationParameters = {
   accessToken: string
 }
 
-const searchHandler = (event: ResourcesSearchRequest, context: FunctionEventContext<AppInstallationParameters>) => {
-  return null
+const searchHandler = (event: ResourcesSearchRequest, context: FunctionEventContext<AppInstallationParameters>): ResourcesSearchResponse => {
+  return {items: [], pages: {}}
 };
 
-const lookupHandler = (event: ResourcesLookupRequest, context: FunctionEventContext<AppInstallationParameters>) => {
-  return null
+const lookupHandler = (event: ResourcesLookupRequest, context: FunctionEventContext<AppInstallationParameters>): ResourcesLookupResponse => {
+  return {items: [], pages: {}}
 };
 
 // @ts-expect-error ...
