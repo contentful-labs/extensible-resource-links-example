@@ -12,17 +12,22 @@ type AppInstallationParameters = {
   storefrontAccessToken: string
 }
 
-const transformResult = (result: any) => {
+const transformResult = (externalUrlPrefix: string) => (result: any) => {
+  const imageUrl = result.poster_path || result.profile_path;
+
   return ({
     ...result,
     id: String(result.id),
-    image: {
-      url: `https://image.tmdb.org/t/p/w200${result.poster_path}`
-    },
+    ...(imageUrl && {
+      image: {
+        url: `https://image.tmdb.org/t/p/w200${result.poster_path || result.profile_path}`
+      }
+    }),
+    externalUrl: `${externalUrlPrefix}${result.id}`
   })
 }
 
-const fetchApi = async (url: string, context: FunctionEventContext<AppInstallationParameters>) => {
+const fetchApi = async (url: string, externalUrlPrefix: string, context: FunctionEventContext<AppInstallationParameters>) => {
   const options = {
     method: 'GET',
     headers: {
@@ -42,35 +47,75 @@ const fetchApi = async (url: string, context: FunctionEventContext<AppInstallati
       throw err
     });
 
-  if(!result){
+  if (!result) {
     return {items: [], pages: {}}
   }
 
-  if(Array.isArray( result.results)){
+  if (Array.isArray(result.results)) {
     return {
-      items: result.results.map(transformResult),
+      items: result.results.map(transformResult(externalUrlPrefix)),
       pages: {
         nextCursor: result.total_pages > result.page ? String(result.page + 1) : undefined
       }
     }
   }
 
-  return { items: [transformResult(result)], pages: {}}
+  return {items: [transformResult(externalUrlPrefix)(result)], pages: {}}
 }
 
 const searchHandler = async (event: ResourcesSearchRequest, context: FunctionEventContext<AppInstallationParameters>): Promise<ResourcesSearchResponse> => {
-  let url = `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${event.pages?.nextCursor ?? 1}`;
-  if(event.query){
-    url = `https://api.themoviedb.org/3/search/movie?query=${event.query}&include_adult=false&language=en-US&page=${event.pages?.nextCursor ?? 1}`;
+  let url: string;
+  let externalUrlPrefix: string;
+  switch (event.resourceType) {
+    case 'TMDB:Movie':
+      externalUrlPrefix = 'https://www.themoviedb.org/movie/';
+      url = `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${event.pages?.nextCursor ?? 1}`;
+      if (event.query) {
+        url = `https://api.themoviedb.org/3/search/movie?query=${event.query}&include_adult=false&language=en-US&page=${event.pages?.nextCursor ?? 1}`;
+      }
+      break;
+    case 'TMDB:Series':
+      externalUrlPrefix = 'https://www.themoviedb.org/tv/';
+      url = `https://api.themoviedb.org/3/tv/popular?language=en-US&page=${event.pages?.nextCursor ?? 1}`;
+      if (event.query) {
+        url = `https://api.themoviedb.org/3/search/tv?query=${event.query}&include_adult=false&language=en-US&page=${event.pages?.nextCursor ?? 1}`;
+      }
+      break;
+    case 'TMDB:Person':
+      externalUrlPrefix = 'https://www.themoviedb.org/person/';
+        url = `https://api.themoviedb.org/3/person/popular?language=en-US&page=${event.pages?.nextCursor ?? 1}`;
+      if (event.query) {
+        url = `https://api.themoviedb.org/3/search/person?query=${event.query}&include_adult=false&language=en-US&page=${event.pages?.nextCursor ?? 1}`;
+      }
+      break;
+    default:
+      throw new Error("Bad Request");
   }
 
-  return fetchApi(url, context)
+  return fetchApi(url, externalUrlPrefix, context)
 };
 
 const lookupHandler = async (event: ResourcesLookupRequest, context: FunctionEventContext<AppInstallationParameters>): Promise<ResourcesLookupResponse> => {
-  const url = `https://api.themoviedb.org/3/movie/${event.lookupBy.urns[0]}?language=en-US`;
+  let url: string;
+  let externalUrlPrefix: string;
+  switch (event.resourceType) {
+    case 'TMDB:Movie':
+      externalUrlPrefix = 'https://www.themoviedb.org/movie/';
+      url = `https://api.themoviedb.org/3/movie/${event.lookupBy.urns[0]}?language=en-US`;
+      break;
+    case 'TMDB:Series':
+      externalUrlPrefix = 'https://www.themoviedb.org/tv/';
+      url = `https://api.themoviedb.org/3/tv/${event.lookupBy.urns[0]}?language=en-US`;
+      break;
+    case 'TMDB:Person':
+      externalUrlPrefix = 'https://www.themoviedb.org/person/';
+      url = `https://api.themoviedb.org/3/person/${event.lookupBy.urns[0]}?language=en-US`;
+      break;
+    default:
+      throw new Error("Bad Request");
+  }
 
-  return fetchApi(url, context)
+  return fetchApi(url, externalUrlPrefix, context)
 };
 
 // @ts-expect-error ...
