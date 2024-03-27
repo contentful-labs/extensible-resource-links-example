@@ -11,7 +11,7 @@ export type ResourcesSearchRequest = {
 
 export type Scalar = string | number | boolean
 
-export type ResourcesLookupRequest<L extends Record<string, Scalar | Scalar[]> = Record<string, Scalar | Scalar[]>> = {
+export type ResourcesLookupRequest<L extends Record<string, Scalar[]> = Record<string, Scalar[]>> = {
   type: 'resources.lookup'
   lookupBy: L
   resourceType: string

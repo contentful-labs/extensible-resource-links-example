@@ -9,27 +9,54 @@ import {
 
 
 type AppInstallationParameters = {
-  accessToken: string
+  storefrontAccessToken: string
 }
-const searchHandler = (event: ResourcesSearchRequest, context: FunctionEventContext<AppInstallationParameters>): ResourcesSearchResponse => {
-  return {items: [{id: 'efcwret', title: 'Dune', overview: 'A great movie'}], pages: {}}
+const searchHandler = async (event: ResourcesSearchRequest, context: FunctionEventContext<AppInstallationParameters>): Promise<ResourcesSearchResponse> => {
+  const url = 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1';
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: `Bearer ${context.appInstallationParameters.storefrontAccessToken}`
+    }
+  };
+
+  const result = await fetch(url, options)
+    .then((res: any) => res.json())
+    .then((json: any) => {
+      console.log(json)
+      return json
+    })
+    .catch((err: any) => {
+      console.error('error:' + err)
+      throw err
+    });
+
+  return { items: result.results?.map(({id, ...rest}: any) => ({id: String(id), ...rest})) ?? [], pages: {}}
 };
 
-const lookupHandler = (event: ResourcesLookupRequest, context: FunctionEventContext<AppInstallationParameters>): ResourcesLookupResponse => {
-  let items
-  // const options = {
-  //   method: 'GET',
-  //   headers: {
-  //     Authorization: 'Bearer ',
-  //     accept: 'application/json'
-  //   }
-  // };
-  //
-  // fetch('https://api.themoviedb.org/3/movie/popular?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc', options)
-  //     .then(response => response.json())
-  //     .then(response => console.log(response))
-  //     .catch(err => console.error(err));
-  return {items: [{title: 'Dune'}], pages: {}}
+const lookupHandler = async (event: ResourcesLookupRequest, context: FunctionEventContext<AppInstallationParameters>): Promise<ResourcesLookupResponse> => {
+  const url = `https://api.themoviedb.org/3/movie/${event.lookupBy.urns[0]}?language=en-US`;
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: `Bearer ${context.appInstallationParameters.storefrontAccessToken}`
+    }
+  };
+
+  const result = await fetch(url, options)
+    .then((res: any) => res.json())
+    .then((json: any) => {
+      console.log(json)
+      return json
+    })
+    .catch((err: any) => {
+      console.error('error:' + err)
+      throw err
+    });
+
+  return { items: result ? [{...result, id: String(result.id)}] : [], pages: {}}
 };
 
 // @ts-expect-error ...
