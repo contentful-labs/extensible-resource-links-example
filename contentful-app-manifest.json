@@ -2,12 +2,12 @@
   "functions": [
     {
       "id": "shopifySearchFunction",
-      "name": "Example Function",
+      "name": "TMDB lookup function",
       "description": "This is an example to help you learn how functions work.",
-      "path": "functions/example.js",
-      "entryFile": "functions/example.ts",
+      "path": "functions/TMDBResources.js",
+      "entryFile": "functions/TMDBResources.ts",
       "allowNetworks": [],
-      "accepts": ["graphql.field.mapping", "graphql.query"]
+      "accepts": ["resources.search", "resources.lookup"]
     }
   ]
 }
