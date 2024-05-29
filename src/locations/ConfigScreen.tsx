@@ -5,7 +5,7 @@ import { useSDK } from '@contentful/react-apps-toolkit';
 
 interface AppInstallationParameters {
   apiEndpoint?: string;
-  storefrontAccessToken?: string;
+  tmdbAccessToken?: string;
   secretExternalResourceProvider?: string;
   resourceTypes?: string;
   providerName?: string;
@@ -68,17 +68,17 @@ const ConfigScreen = () => {
             )}
           </FormControl>
 
-          <FormControl isRequired isInvalid={!parameters.storefrontAccessToken}>
+          <FormControl isRequired isInvalid={!parameters.tmdbAccessToken}>
             <FormControl.Label>API token</FormControl.Label>
             <TextInput
-                value={parameters.storefrontAccessToken}
-                name="storefrontAccessToken"
-                onChange={updateParameters("storefrontAccessToken")}
+                value={parameters.tmdbAccessToken}
+                name="tmdbAccessToken"
+                onChange={updateParameters("tmdbAccessToken")}
             />
             <FormControl.HelpText>
               Provide the access token of the shop
             </FormControl.HelpText>
-            {!parameters.storefrontAccessToken && (
+            {!parameters.tmdbAccessToken && (
                 <FormControl.ValidationMessage>
                   Please, provide valid API token
                 </FormControl.ValidationMessage>

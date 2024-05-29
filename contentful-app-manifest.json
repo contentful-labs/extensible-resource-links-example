@@ -4,8 +4,8 @@
       "id": "shopifySearchFunction",
       "name": "TMDB lookup function",
       "description": "This is an example to help you learn how functions work.",
-      "path": "functions/TMDBResources.js",
-      "entryFile": "functions/TMDBResources.ts",
+      "path": "functions/index.js",
+      "entryFile": "functions/index.ts",
       "allowNetworks": ["api.themoviedb.org"],
       "accepts": []
     }
