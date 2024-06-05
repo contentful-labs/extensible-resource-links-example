@@ -1,0 +1,8 @@
+{
+  "sys": { "id": "TMDB:Movie" },
+  "name": "Movie",
+  "resourceCardView": {
+    "title": "{ /title }",
+    "subtitle": "Movie ID: {/id}"
+  }
+}

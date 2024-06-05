@@ -1,0 +1,8 @@
+{
+  "sys": { "id": "TMDB:Person" },
+  "name": "Person",
+  "resourceCardView": {
+    "title": "{ /name }",
+    "subtitle": "Person ID: {/id}"
+  }
+}

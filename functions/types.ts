@@ -13,8 +13,17 @@ export type AppInstallationParameters = {
   tmdbAccessToken: string;
 };
 
-export type TmdbItem = {
+type Person = {
+  id: number;
+  gender: number;
+  name: string;
+  known_for_department: string;
+};
+
+type Movie = {
+  id: number;
   poster_path: string;
   profile_path: string;
-  id: number;
 };
+
+export type TmdbItem = Movie | Person;
