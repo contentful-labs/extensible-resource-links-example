@@ -1,20 +1,16 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { ConfigAppSDK } from "@contentful/app-sdk";
+import React, { useCallback, useState, useEffect } from 'react';
+import { ConfigAppSDK } from '@contentful/app-sdk';
 import {
   Heading,
   Form,
   Flex,
   TextInput,
-  FormControl,
-} from "@contentful/f36-components";
-import { useSDK } from "@contentful/react-apps-toolkit";
+  FormControl
+} from '@contentful/f36-components';
+import { useSDK } from '@contentful/react-apps-toolkit';
 
 interface AppInstallationParameters {
-  apiEndpoint?: string;
   tmdbAccessToken?: string;
-  secretExternalResourceProvider?: string;
-  resourceTypes?: string;
-  providerName?: string;
 }
 
 const ConfigScreen = () => {
@@ -25,7 +21,7 @@ const ConfigScreen = () => {
     const currentState = await sdk.app.getCurrentState();
     return {
       parameters,
-      targetState: currentState,
+      targetState: currentState
     };
   }, [parameters, sdk]);
 
@@ -64,7 +60,7 @@ const ConfigScreen = () => {
           <TextInput
             value={parameters.tmdbAccessToken}
             name="tmdbAccessToken"
-            onChange={updateParameters("tmdbAccessToken")}
+            onChange={updateParameters('tmdbAccessToken')}
           />
           <FormControl.HelpText>
             Provide the access token of TMDB
