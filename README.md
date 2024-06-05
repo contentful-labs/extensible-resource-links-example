@@ -48,7 +48,7 @@ Search handler expects the following shape for outgoing requests:
 
 ```typescript
 type ResourcesSearchRequest = {
-  type: "resources.search";
+  type: 'resources.search';
   resourceType: string;
   query: string;
   limit?: number;
@@ -75,9 +75,9 @@ Lookup handler expects the following shape for outgoing requests:
 type Scalar = string | number | boolean;
 
 type ResourcesLookupRequest<
-  L extends Record<string, Scalar[]> = Record<string, Scalar[]>,
+  L extends Record<string, Scalar[]> = Record<string, Scalar[]>
 > = {
-  type: "resources.lookup";
+  type: 'resources.lookup';
   lookupBy: L;
   resourceType: string;
   limit?: number;
@@ -161,9 +161,9 @@ An example search event request could look like this:
 
 ```typescript
 const searchRequest: ResourcesSearchRequest = {
-  type: "resources.search",
-  resourceType: "TMDB:Person",
-  query: "Tom",
+  type: 'resources.search',
+  resourceType: 'TMDB:Person',
+  query: 'Tom'
 };
 ```
 
@@ -171,11 +171,11 @@ And an example lookup event request could look like this:
 
 ```typescript
 const lookupRequest: ResourcesLookupRequest = {
-  type: "resources.lookup",
-  resourceType: "TMDB:Person",
+  type: 'resources.lookup',
+  resourceType: 'TMDB:Person',
   lookupBy: {
-    urn: ["31", "1245"],
-  },
+    urn: ['31', '1245']
+  }
 };
 ```
 
@@ -184,61 +184,67 @@ In the examples above, we would expect:
 - the search event to return the resource with the URN `31` (Tom Hanks),
 - the lookup event to return the resources with the URNs `31` (Tom Hanks) and `1245` (Scarlett Johansson).
 
-# Instructions
+# Instructions to create and run the app
 
 ## Creating a custom app definition
 
-<!-- TODO: REPLACE WITH CLI -->
-<!-- `npm run create-app-definition` -->
+Before we can upload our code to Contentful, we need to create a definition of the app that will be associated with our code. To do this:
 
-Functions are part of Contentful's Apps. We first need to set up a custom app. To do this:
-
-1. Log in to the Contentful web app.
-2. In the top-left corner, click the organization name and select Organization settings & subscriptions.
-3. Go to the "Apps" tab and select Create app.
-4. Select "Create app".
-5. Configure the app settings as follows:
-
-- Change the app name to "TMDB App".
-- Select the App configuration screen option as we need this screen to provide the TMDB API token.
-
-App definition stores the shape of the app configuration. The specific values of the config are defined during the app installation process.
-
-In our example, first we need to provide the configuration shape that contains the TMDB API token. To do this:
-
-1. Click _Add instance parameter definition_.
-2. Set the Display name field to _TMDB Access Token_ (the ID is automatically generated).
-3. Select the Required parameter check box.
-4. Set the Type field to Short text.
-5. Click Save to store the parameter.
+1. Run the script `npm run create-app-definition`. You will see a prompt asking for the name of the app. Enter `TMDB App` and press Enter to confirm.
+2. Next prompt will ask for the location where the app will be rendered. Select _App configuration screen_ and press Enter to confirm.
+3. Next step asks about the endpoint used for the app. As the default value is correct, press Enter to confirm.
+4. Next question asks us if we would like to specify App Parameters. Type `Y` and press Enter. Select _Instance_, then type `TMDB access token` as _Parameter name_ and `tmdbAccessToken` as _ID_. Select _Symbol_ as type and mark it as required.
+5. Next prompt will ask for the access token. In the background, a new browser tab will open with a Contentful token value (you might need to log in first). Copy the token and paste it into the terminal. Press Enter to confirm.
+6. In the next step we need to define which organization the app will be associated with. Select the organization you want to use and press Enter to confirm.
 
 Your custom app is now configured. As a final step, click Save to persist the app configuration.
 
-## Uploading the bundle
+## Running and installing the app
 
-here we define the steps with CLI
+We can start with running the code locally to see how it works. To do this, execute:
 
-## Installing and configuring the app
+```bash
+$ npm install
+$ npm run build
+$ npm run start
+```
 
-After we have defined the app configuration in one of the previous steps, we can install the app in our desired environment. To do so:
+Next, install the app. To install the app:
 
-1. Go to your space and click Apps in the top menu bar.
-2. Select Custom Apps. The list of custom apps available in your space is displayed.
-3. Click the three dotted icon next to your app (which we set up earlier in the tutorial), and select Install.
-
-- NOTE: You have to grant access to your space the app will be installed in.
-
-4. After granting access, the configuration screen, which is rendered by the `<ConfigScreen />` component, is displayed. Put in your TMDB token in the form.
+1. Go to your space and click _Apps_ in the top menu bar.
+2. Select _Custom Apps_. The list of custom apps available in your space is displayed.
+3. Click the _Install_ button next to your app (which we set up earlier in the tutorial).
+   NOTE: You have to grant access to your space the app will be installed in.
+4. After granting access, the configuration screen, which is rendered by the <ConfigScreen /> component, is displayed. Put in your TMDB token in the form.
 5. Click Save.
 
 Your app is now installed and configured.
 
-The form that will save the token when we install the app has been defined in `src/locations/ConfigScreen.tsx`. More information how configuration screens are set up can be foune in [this App Configuration tutorial](https://www.contentful.com/developers/docs/extensibility/app-framework/app-configuration/).
+The form that will save the token when we install the app has been defined in `src/locations/ConfigScreen.tsx`. More information how configuration screens are set up can be found in [this App Configuration tutorial](https://www.contentful.com/developers/docs/extensibility/app-framework/app-configuration/).
 
-<!-- TODOS -->
-<!-- 1. Remove all UI config in favor of environment variables and CLI -->
-<!-- 2. Add an explanation of the JSON files and maybe? what create-resource-entities script does (will do - to be done in a follow up) -->
-<!-- 3. Improve the `resourceCardView` mapping with some better properties -->
+## Create resource entities
+
+<!-- TODO: Explain how to run the script to create entities -->
+<!-- TODO: Improve the `resourceCardView` mapping with some better properties -->
+<!-- TODO: Explain how to utilize the code in content modeling -->
+<!-- TODO: Fix / remove generic tests -->
+
+## Uploading the bundle
+
+So far the code has been running locally on your machine. Functions can be also deployed to Contentful's infrastructure. To do this, we need to build and upload the bundle to Contentful:
+
+```bash
+$ npm run build
+$ npm run upload
+```
+
+The `upload` command will guide you through the deployment process and ask for all required arguments.
+
+At any moment you can go back to the setup of running the code locally instead of uploading the bundle to Contentful's infrastructure by the following steps:
+
+- Run `npm run open-settings`, which will open the web page with the App details.
+- Deselect the _Hosted by Contentful_ option and fill the text field below with `http://localhost:3000`.
+- Save the changes.
 
 ## Available Scripts
 
@@ -277,3 +283,11 @@ For this command to work, the following environment variables must be set:
 - `CONTENTFUL_ORG_ID` - The ID of your organization
 - `CONTENTFUL_APP_DEF_ID` - The ID of the app to which to add the bundle
 - `CONTENTFUL_ACCESS_TOKEN` - A personal [access token](https://www.contentful.com/developers/docs/references/content-management-api/#/reference/personal-access-tokens)
+
+#### `npm run create-app-definition`
+
+<!-- TODO -->
+
+#### `npm run create-resource-entities`
+
+<!-- TODO -->
