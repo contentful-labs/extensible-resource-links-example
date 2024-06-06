@@ -1,47 +1,35 @@
 import { FunctionEventContext } from '@contentful/node-apps-toolkit';
 import { fetchApi, getUrls, transformResult } from './helpers';
+import { AppInstallationParameters } from './types/common';
 import {
-  AppInstallationParameters,
-  ResourcesLookupResponse,
-  Scalar,
-  TmdbItem
-} from './types';
-
-export type ResourcesLookupRequest<
-  L extends Record<string, Scalar[]> = Record<string, Scalar[]>
-> = {
-  type: 'resources.lookup';
-  lookupBy: L;
-  resourceType: string;
-  limit?: number;
-  pages?: {
-    nextCursor: string;
-  };
-};
-
-export type TmdbLookupResponse = TmdbItem;
+  ResourcesLookupRequest,
+  ResourcesLookupResponse
+} from './types/handler';
+import { TmdbLookupResponse } from './types/tmdb';
 
 const fetchLookup = async (
-  url: string,
+  urls: string[],
   prefix: string,
   context: FunctionEventContext<AppInstallationParameters>
 ) => {
-  const tmdbResponse = (await fetchApi(url, context)) as TmdbLookupResponse;
+  const items = await Promise.all(
+    urls.map((url) =>
+      fetchApi<TmdbLookupResponse>(url, context).then((response) =>
+        transformResult(prefix)(response)
+      )
+    )
+  );
 
-  if (!tmdbResponse) {
-    return { items: [], pages: {} };
-  }
-
-  return { items: [transformResult(prefix)(tmdbResponse)], pages: {} };
+  return { items, pages: {} };
 };
 
 export const lookupHandler = async (
   event: ResourcesLookupRequest,
   context: FunctionEventContext<AppInstallationParameters>
 ): Promise<ResourcesLookupResponse> => {
-  const { lookupUrl, prefixUrl } = getUrls(event.resourceType, {
-    urn: event.lookupBy.urns[0]
+  const { lookupUrls, prefixUrl } = getUrls(event.resourceType, {
+    urns: event.lookupBy.urns
   });
 
-  return fetchLookup(lookupUrl, prefixUrl, context);
+  return fetchLookup(lookupUrls, prefixUrl, context);
 };

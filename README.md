@@ -90,16 +90,14 @@ type ResourcesLookupRequest<
 | resourceType     | string (required)             | String consisting of the name of the provider and the resource within the provider, in a format `{Provider}:{Type}, eg. TMDB:Movie |
 | type             | `resources.lookup` (required) | Identifier for the type of the event                                                                                               |
 | lookupBy         | object (required)             |
-| lookupBy.urn     | string[]                      | List of IDs of entities to be fetched                                                                                              |
+| lookupBy.urns    | string[]                      | List of IDs of entities to be fetched                                                                                              |
 
 ### Response
 
 Both events return the same shape of the response:
 
 ```typescript
-type Resource = {
-  urn: string;
-} & Record<string, unknown>;
+type Resource = Record<string, unknown>;
 
 type ResourcesSearchResponse = {
   items: Resource[];
@@ -119,7 +117,6 @@ type ResourcesLookupResponse = {
 | property         | type                  | description                                              |
 | ---------------- | --------------------- | -------------------------------------------------------- |
 | items            | Resource[] (required) | List of returned resources                               |
-| items[].urn      | string (required)     | Unique identifier for each of the returned resources     |
 | pages            | object (required)     |                                                          |
 | pages.nextCursor | string (optional)     | Cursor string to be used to request next page of results |
 
@@ -132,21 +129,18 @@ Assuming that TMDB API exposes `Person` entities with the following (simplified)
   "results": [
     {
       "id": 1245,
-      "gender": 1,
       "name": "Scarlett Johansson",
-      "known_for_department": "Acting"
+      "profile_path": "/6NsMbJXRlDZuDzatN2akFdGuTvx.jpg"
     }
     {
       "id": 488,
-      "gender": 2,
       "name": "Steven Spielberg",
-      "known_for_department": "Directing"
+      "profile_path": "/tZxcg19YQ3e8fJ0pOs7hjlnmmr6.jpg"
     },
     {
       "id": 31,
-      "gender": 2,
       "name": "Tom Hanks",
-      "known_for_department": "Acting"
+      "profile_path": "/mKr8PN8sn80LzVaZMg8L52kmakm.jpg"
     }
   ]
 }
