@@ -13,7 +13,7 @@ A valid API token for the TMDB API is required to run this app. You can get one 
 
 # Description
 
-Extensible Resource Links provide a streamlined method to connect and work with third-party systems in Contentful, ensuring standardized operations when configuring content model architecture, creating content with entries/assets from these systems, and retrieving content that includes these assets.
+Extensible Resource Links provide a streamlined method to connect and work with third-party systems in Contentful, ensuring standardized operations when configuring content model architecture, as well as creating and retrieving content with entities from these systems.
 
 This means you have a standardized way of connecting third-party content with Contentful content from different spaces.
 
@@ -23,17 +23,12 @@ This project aims to provide an example of the setup for Extensible Resource Lin
 
 Extensible Resource Links introduce concepts of two resource entities that allow us to model the data from third-party systems in Contentful. These entities are:
 
-- `Resource Providers` - a third-party system that provides resources. Each provider can have multiple resource types.
-- `Resource Types` - a specific type of resource that is provided by a resource provider.
+- `Resource Provider` - a third-party system that provides resources. Each provider can have multiple resource types.
+- `Resource Type` - a specific type of resource that is provided by a resource provider.
 
 In this example, we have a `TMDB` provider that provides `Movie` and `Person` resource types.
 
 ## Functions
-
-Functions are serverless workloads that run on Contentful’s infrastructure to provide enhanced flexibility and customization. You can use Functions to:
-
-- connect to external systems and enrich the response of requests issued through Contentful's APIs, or
-- filter, transform, and handle events coming from Contentful without having to set up your own backend
 
 The Function event handler for Extensible Resource Links can parse two different types of events:
 
@@ -188,7 +183,7 @@ In the examples above, we would expect:
 
 ## Creating a custom app definition
 
-Before we can upload our code to Contentful, we need to create a definition of the app that will be associated with our code. To do this:
+Before we can upload our code to Contentful, we need to create an _App Definition_ for the app that will be associated with our code. To do this:
 
 1. Run the script `npm run create-app-definition`. You will see a prompt asking for the name of the app. Enter `TMDB App` and press Enter to confirm.
 2. Next prompt will ask for the location where the app will be rendered. Select _App configuration screen_ and press Enter to confirm.

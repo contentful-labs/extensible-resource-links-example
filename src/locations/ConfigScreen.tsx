@@ -5,7 +5,8 @@ import {
   Form,
   Flex,
   TextInput,
-  FormControl
+  FormControl,
+  TextLink
 } from '@contentful/f36-components';
 import { useSDK } from '@contentful/react-apps-toolkit';
 
@@ -67,7 +68,8 @@ const ConfigScreen = () => {
           </FormControl.HelpText>
           {!parameters.tmdbAccessToken && (
             <FormControl.ValidationMessage>
-              Please, provide a valid API token
+              Please, provide a valid API token. You can get one by signing up
+              at <TextLink href="https://www.themoviedb.org/">TMDB</TextLink>.
             </FormControl.ValidationMessage>
           )}
         </FormControl>
