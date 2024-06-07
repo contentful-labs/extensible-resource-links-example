@@ -15,15 +15,14 @@ export const transformResult =
     const name = 'title' in result ? result.title : result.name;
 
     return {
-      ...result,
-      name,
       id: String(result.id),
+      name,
       ...(imageUrl && {
         image: {
           url: `https://image.tmdb.org/t/p/w200${imageUrl}`
         }
       }),
-      externalUrl: `${externalUrlPrefix}${result.id}`
+      externalUrl: `${externalUrlPrefix}/${result.id}`
     };
   };
 
