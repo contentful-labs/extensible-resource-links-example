@@ -12,15 +12,15 @@ const fetchLookup = async (
   prefix: string,
   context: FunctionEventContext<AppInstallationParameters>
 ) => {
-  const items = await Promise.all(
+  return Promise.all(
     urls.map((url) =>
       fetchApi<TmdbLookupResponse>(url, context).then((response) =>
         transformResult(prefix)(response)
       )
     )
-  );
-
-  return { items, pages: {} };
+  )
+    .then((items) => ({ items, pages: {} }))
+    .catch((error) => ({ items: [], pages: {} }));
 };
 
 export const lookupHandler = async (
