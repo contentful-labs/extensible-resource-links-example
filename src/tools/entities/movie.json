@@ -1,0 +1,13 @@
+{
+  "sys": { "id": "TMDB:Movie" },
+  "name": "Movie",
+  "resourceCardView": {
+    "title": "{ /name }",
+    "subtitle": "Movie ID: {/id}",
+    "externalUrl": "{ /externalUrl }",
+    "image": {
+      "url": "{ /image/url }",
+      "altText": "{ /name }"
+    }
+  }
+}

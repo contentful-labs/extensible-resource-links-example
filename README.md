@@ -4,38 +4,42 @@ This project was bootstrapped with [Create Contentful App](https://github.com/co
 
 # Prerequisites
 
-* [Functions](https://www.contentful.com/developers/docs/extensibility/app-framework/functions/)
+We're assuming you are familiar with the following concepts:
 
-# Instructions
+- [App Framework](https://www.contentful.com/developers/docs/extensibility/app-framework/), including [App Definition](https://www.contentful.com/developers/docs/extensibility/app-framework/app-definition/) and [App Installation](https://www.contentful.com/developers/docs/extensibility/app-framework/app-installation/)
+- [Functions](https://www.contentful.com/developers/docs/extensibility/app-framework/functions/)
 
-## Description
+A valid API token for the TMDB API is required to run this app. You can get one by signing up at [TMDB](https://www.themoviedb.org/signup).
 
-Extensible Resource Links provide a streamlined method to connect and work with third-party systems in Contentful, ensuring standardized operations when configuring content model architecture, creating content with entries/assets from these systems, and retrieving content that includes these assets. 
+# Description
 
-This means that you have a standardized way of connecting 3rd party content with Contentful content from different spaces.
+Extensible Resource Links provide a streamlined method to connect and work with third-party systems in Contentful, ensuring standardized operations when configuring content model architecture, as well as creating and retrieving content with entities from these systems.
 
-This project aims to give an example of the setup for Extensible Resource Links. In this example we are connecting to TMDB API to retrieve `Movie` and `Person` entities, that can be rendered in Contentful Web UI.
+This means you have a standardized way of connecting third-party content with Contentful content from different spaces.
 
-Below we have an overview and steps how to use it.
+This project aims to provide an example of the setup for Extensible Resource Links. In this example, we are connecting to the TMDB API to retrieve `Movie` and `Person` entities, which can be rendered in Contentful Web UI.
 
-## 1. Functions
+## Entities
 
-Functions are serverless workloads that run on Contentful’s infrastructure to provide enhanced flexibility and customization. You can use Functions to:
+With Extensible Resource Links we introduce two new entity types that allow us to model the data from third-party systems in Contentful. These entities are:
 
-* connect to external systems and enrich the response of requests issued through Contentful's APIs, or
-* filter, transform, and handle events coming from Contentful without having to set up your own backend
+- `Resource Provider` - a third-party system that provides resources. Each provider can have multiple resource types. In this example, we have a `TMDB` provider.
+- `Resource Type` - a specific type of resource that is provided by a resource provider. In our example, we introduce `Movie` and `Person` resource types.
 
-Extensible Resource Links require you to handle 2 events:
-* `search` - retrieval of specific content based on search queries
-* `lookup` - retrieval of specific content based on URNs
+## Functions
 
-The starting point is `functions/index.ts` where handlers for these events are used (they are defined in `functions/lookupHandler.ts` and `functions/searchHandler.ts`) and which is an entry point for our backend to use functions from this project (as defined in `contentful-app-manifest.json`).
+The Function event handler for Extensible Resource Links can parse two different types of events:
 
-### Search
+- `search` - retrieval of specific content based on search queries
+- `lookup` - retrieval of specific content based on URNs (IDs)
 
-Search handler expects specific shapes for incoming requests
+Example code for these handlers can be found in `functions/lookupHandler.ts` and `functions/searchHandler.ts` files.
 
-```
+### Search request
+
+Search handler expects the following shape for outgoing requests:
+
+```typescript
 type ResourcesSearchRequest = {
   type: 'resources.search';
   resourceType: string;
@@ -47,21 +51,25 @@ type ResourcesSearchRequest = {
 };
 ```
 
-| property | type | description |
-| --- | --- | --- |
-| limit |	number (required)	| Number defining the maximum of items that should be returned |
-| pages |	object (optional)	|
-| pages.nextCursor |	string (required) |	Cursor string pointing to the specific page of results to be used as a starting point for the request |
-| resourceType |	string (required) |	String consisting of the name of the provider and the resource within the provider, eg. Shopify:Product |
-| type	| `resources.search` (required) |	Identifier for the type of the event |
-| query |	string (optional)	| Search query to be passed to Contentful Function, which in turn passes it down to the 3rd party system's search API |
+| property         | type                          | description                                                                                                                        |
+| ---------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| limit            | number (required)             | Number defining the maximum of items that should be returned                                                                       |
+| pages            | object (optional)             |
+| pages.nextCursor | string (required)             | Cursor string pointing to the specific page of results to be used as a starting point for the request                              |
+| resourceType     | string (required)             | String consisting of the name of the provider and the resource within the provider, in a format `{Provider}:{Type}, eg. TMDB:Movie |
+| type             | `resources.search` (required) | Identifier for the type of the event                                                                                               |
+| query            | string (optional)             | Search query to be passed to Contentful Function, which in turn passes it down to the 3rd party system's search API                |
 
-### Lookup
+### Lookup request
 
-Lookup handler expects specific shapes for incoming requests
+Lookup handler expects the following shape for outgoing requests:
 
-```
-type ResourcesLookupRequest = {
+```typescript
+type Scalar = string | number | boolean;
+
+type ResourcesLookupRequest<
+  L extends Record<string, Scalar[]> = Record<string, Scalar[]>
+> = {
   type: 'resources.lookup';
   lookupBy: L;
   resourceType: string;
@@ -72,69 +80,157 @@ type ResourcesLookupRequest = {
 };
 ```
 
-| property | type | description |
-| --- | --- | --- |
-| limit |	number (required)	| Number defining the maximum of items that should be returned |
-| pages |	object (optional)	|
-| pages.nextCursor |	string (required) |	Cursor string pointing to the specific page of results to be used as a starting point for the request |
-| resourceType |	string (required) |	String consisting of the name of the provider and the resource within the provider, eg. Shopify:Product |
-| type | `resources.lookup` (required) |	Identifier for the type of the event |
-| lookupBy |	object (required) |	
-| lookupBy.urn |	string[] |	List of IDs of entities to be fetched |
+| property         | type                          | description                                                                                                                        |
+| ---------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| limit            | number (required)             | Number defining the maximum of items that should be returned                                                                       |
+| pages            | object (optional)             |
+| pages.nextCursor | string (required)             | Cursor string pointing to the specific page of results to be used as a starting point for the request                              |
+| resourceType     | string (required)             | String consisting of the name of the provider and the resource within the provider, in a format `{Provider}:{Type}, eg. TMDB:Movie |
+| type             | `resources.lookup` (required) | Identifier for the type of the event                                                                                               |
+| lookupBy         | object (required)             |
+| lookupBy.urns    | string[]                      | List of IDs of entities to be fetched                                                                                              |
 
+### Response
 
-## 2. Config Screen
+Both events return the same shape of the response:
 
+```typescript
+type Resource = Record<string, unknown>;
 
-## 3. Set up Contentful application and upload the bundle
+type ResourcesSearchResponse = {
+  items: Resource[];
+  pages: {
+    nextCursor?: string;
+  };
+};
 
+type ResourcesLookupResponse = {
+  items: Resource[];
+  pages: {
+    nextCursor?: string;
+  };
+};
+```
 
-## 4. Resource Providers and Resource Types
+| property         | type                  | description                                              |
+| ---------------- | --------------------- | -------------------------------------------------------- |
+| items            | Resource[] (required) | List of returned resources                               |
+| pages            | object (required)     |                                                          |
+| pages.nextCursor | string (optional)     | Cursor string to be used to request next page of results |
 
+### Example
 
-## Example configuration
-
-Assuming the provider name is `TMDB` you can set the following to get all currently supported entities: `Movie`, `Series`, and `Person`.
+Assuming that TMDB API exposes `Person` entities with the following (simplified) shape:
 
 ```json
-[
+{
+  "results": [
     {
-        "id": "TMDB:Movie",
-        "name": "Movie",
-        "providerId": "TMDB",
-        "defaultView": {
-            "title": "{ /title }",
-            "subtitle": "Movie ID: {/id}",
-            "image": "{/image}",
-            "externalUrl": "{/externalUrl}",
-            "description": "{/overview}"
-        }
-    },
-    {
-        "id": "TMDB:Series",
-        "name": "Series",
-        "externalUrl": "{/externalUrl}",
-        "providerId": "TMDB",
-        "defaultView": {
-            "title": "{ /name }",
-            "subtitle": "Series ID: {/id}",
-            "image": "{/image}",
-            "description": "{/overview}"
-        }
-    },
-    {
-        "id": "TMDB:Person",
-        "name": "Person",
-        "externalUrl": "{/externalUrl}",
-        "providerId": "TMDB",
-        "defaultView": {
-            "title": "{ /name }",
-            "subtitle": "Person ID: {/id}",
-            "image": "{/image}"
-        }
+      "id": 1245,
+      "name": "Scarlett Johansson",
+      "profile_path": "/6NsMbJXRlDZuDzatN2akFdGuTvx.jpg"
     }
-]
+    {
+      "id": 488,
+      "name": "Steven Spielberg",
+      "profile_path": "/tZxcg19YQ3e8fJ0pOs7hjlnmmr6.jpg"
+    },
+    {
+      "id": 31,
+      "name": "Tom Hanks",
+      "profile_path": "/mKr8PN8sn80LzVaZMg8L52kmakm.jpg"
+    }
+  ]
+}
 ```
+
+An example search event request could look like this:
+
+```typescript
+const searchRequest: ResourcesSearchRequest = {
+  type: 'resources.search',
+  resourceType: 'TMDB:Person',
+  query: 'Tom'
+};
+```
+
+And an example lookup event request could look like this:
+
+```typescript
+const lookupRequest: ResourcesLookupRequest = {
+  type: 'resources.lookup',
+  resourceType: 'TMDB:Person',
+  lookupBy: {
+    urn: ['31', '1245']
+  }
+};
+```
+
+In the examples above, we would expect:
+
+- the search event to return the resource with the URN `31` (Tom Hanks),
+- the lookup event to return the resources with the URNs `31` (Tom Hanks) and `1245` (Scarlett Johansson).
+
+# Instructions to create and run the app
+
+## Creating a custom app definition
+
+Before we can upload our code to Contentful, we need to create an _App Definition_ for the app that will be associated with our code. To do this:
+
+1. Run the script `npm run create-app-definition`. You will see a prompt asking for the name of the app. Enter `TMDB App` and press Enter to confirm.
+2. Next prompt will ask for the location where the app will be rendered. Select _App configuration screen_ and press Enter to confirm.
+3. Next step asks about the endpoint used for the app. As the default value is correct, press Enter to confirm.
+4. Next question asks us if we would like to specify App Parameters. Type `Y` and press Enter. Select _Instance_, then type `TMDB access token` as _Parameter name_ and `tmdbAccessToken` as _ID_. Select _Symbol_ as type and mark it as required.
+5. Next prompt will ask for the access token. In the background, a new browser tab will open with a Contentful token value (you might need to log in first). Copy the token and paste it into the terminal. Press Enter to confirm.
+6. In the next step we need to define which organization the app will be associated with. Select the organization you want to use and press Enter to confirm.
+
+Your custom app is now configured. As a final step, click Save to persist the app configuration.
+
+## Running and installing the app
+
+We can start with running the code locally to see how it works. To do this, execute:
+
+```bash
+$ npm install
+$ npm run build
+$ npm run start
+```
+
+Next, install the app. To install the app:
+
+1. Go to your space and click _Apps_ in the top menu bar.
+2. Select _Custom Apps_. The list of custom apps available in your space is displayed.
+3. Click the _Install_ button next to your app (which we set up earlier in the tutorial).
+   NOTE: You have to grant access to your space the app will be installed in.
+4. After granting access, the configuration screen, which is rendered by the <ConfigScreen /> component, is displayed. Put in your TMDB token in the form.
+5. Click Save.
+
+Your app is now installed and configured.
+
+The form that will save the token when we install the app has been defined in `src/locations/ConfigScreen.tsx`. More information how configuration screens are set up can be found in [this App Configuration tutorial](https://www.contentful.com/developers/docs/extensibility/app-framework/app-configuration/).
+
+## Create resource entities
+
+<!-- TODO: Explain how to run the script to create entities -->
+<!-- TODO: Explain how to utilize the code in content modeling -->
+<!-- TODO: Fix / remove generic tests -->
+
+## Uploading the bundle
+
+So far the code has been running locally on your machine. Functions can be also deployed to Contentful's infrastructure. To do this, we need to build and upload the bundle to Contentful:
+
+```bash
+$ npm run build
+$ npm run upload
+```
+
+The `upload` command will guide you through the deployment process and ask for all required arguments.
+
+At any moment you can go back to the setup of running the code locally instead of uploading the bundle to Contentful's infrastructure by the following steps:
+
+- Run `npm run open-settings`, which will open the web page with the App details.
+- Deselect the _Hosted by Contentful_ option and fill the text field below with `http://localhost:3000`.
+- Save the changes.
 
 ## Available Scripts
 
@@ -173,3 +269,11 @@ For this command to work, the following environment variables must be set:
 - `CONTENTFUL_ORG_ID` - The ID of your organization
 - `CONTENTFUL_APP_DEF_ID` - The ID of the app to which to add the bundle
 - `CONTENTFUL_ACCESS_TOKEN` - A personal [access token](https://www.contentful.com/developers/docs/references/content-management-api/#/reference/personal-access-tokens)
+
+#### `npm run create-app-definition`
+
+<!-- TODO -->
+
+#### `npm run create-resource-entities`
+
+<!-- TODO -->
