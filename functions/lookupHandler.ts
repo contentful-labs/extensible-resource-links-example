@@ -12,15 +12,22 @@ const fetchLookup = async (
   prefix: string,
   context: FunctionEventContext<AppInstallationParameters>
 ) => {
-  return Promise.all(
-    urls.map((url) =>
-      fetchApi<TmdbLookupResponse>(url, context).then((response) =>
-        transformResult(prefix)(response)
+  return (
+    /*
+     * TMDB API does not support bulk lookup requests
+     * Therefore we are making multiple requests to fetch each item
+     * If you'd like to implement pagination for the results, you can do it here
+     */
+    Promise.all(
+      urls.map((url) =>
+        fetchApi<TmdbLookupResponse>(url, context).then((response) =>
+          transformResult(prefix)(response)
+        )
       )
     )
-  )
-    .then((items) => ({ items, pages: {} }))
-    .catch((error) => ({ items: [], pages: {} }));
+      .then((items) => ({ items, pages: {} }))
+      .catch((error) => ({ items: [], pages: {} }))
+  );
 };
 
 export const lookupHandler = async (

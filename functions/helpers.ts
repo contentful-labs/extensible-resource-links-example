@@ -27,7 +27,7 @@ export const transformResult =
   };
 
 export const fetchApi = async <
-  T extends TmdbSearchResponse | TmdbLookupResponse
+  T extends TmdbSearchResponse | TmdbLookupResponse | undefined
 >(
   url: string,
   context: FunctionEventContext<AppInstallationParameters>
@@ -40,7 +40,7 @@ export const fetchApi = async <
     }
   };
 
-  const tmdbResponse = await fetch(url, options)
+  return fetch(url, options)
     .then((res: Response) => res.json())
     .then((json: T) => {
       console.log('Returned Object from TMDB API:', json);
@@ -50,8 +50,6 @@ export const fetchApi = async <
       console.error('error:' + err);
       throw err;
     });
-
-  return tmdbResponse;
 };
 
 type Params = {
@@ -65,10 +63,11 @@ export const getUrls = (
   { query = '', page = '', urns = [] }: Params
 ) => {
   const type = resourceType === 'TMDB:Movie' ? 'movie' : 'person';
+  const encodedQuery = encodeURIComponent(query);
 
   return {
-    prefixUrl: `https://www.themoviedb.org/${type}/`,
-    searchUrl: `https://api.themoviedb.org/3/search/${type}?query=${query}&include_adult=false&language=en-US&page=${page}`,
+    prefixUrl: `https://www.themoviedb.org/${type}`,
+    searchUrl: `https://api.themoviedb.org/3/search/${type}?query=${encodedQuery}&include_adult=false&language=en-US&page=${page}`,
     lookupUrls: urns.map(
       (urn) => `https://api.themoviedb.org/3/${type}/${urn}?language=en-US`
     )
