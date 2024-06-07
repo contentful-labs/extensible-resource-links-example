@@ -64,7 +64,7 @@ const ConfigScreen = () => {
             onChange={updateParameters('tmdbAccessToken')}
           />
           <FormControl.HelpText>
-            Provide the access token of TMDB
+            Provide the access token for TMDB
           </FormControl.HelpText>
           {!parameters.tmdbAccessToken && (
             <FormControl.ValidationMessage>
