@@ -12,9 +12,11 @@ export const transformResult =
   (result: TmdbItem): Resource => {
     const imageUrl =
       'poster_path' in result ? result.poster_path : result.profile_path;
+    const name = 'title' in result ? result.title : result.name;
 
     return {
       ...result,
+      name,
       id: String(result.id),
       ...(imageUrl && {
         image: {

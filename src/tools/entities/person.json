@@ -3,6 +3,11 @@
   "name": "Person",
   "resourceCardView": {
     "title": "{ /name }",
-    "subtitle": "Person ID: {/id}"
+    "subtitle": "Person ID: {/id}",
+    "externalUrl": "{ /externalUrl }",
+    "image": {
+      "url": "{ /image/url }",
+      "altText": "{ /name }"
+    }
   }
 }

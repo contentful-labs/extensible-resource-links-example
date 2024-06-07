@@ -14,6 +14,7 @@ export type TmdbItem = Movie | Person;
 
 export type Resource = Omit<TmdbItem, 'id'> & {
   id: string;
+  name: string;
   image?: {
     url: string;
   };
