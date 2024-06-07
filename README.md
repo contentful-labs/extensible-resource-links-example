@@ -21,12 +21,10 @@ This project aims to provide an example of the setup for Extensible Resource Lin
 
 ## Entities
 
-Extensible Resource Links introduce concepts of two resource entities that allow us to model the data from third-party systems in Contentful. These entities are:
+With Extensible Resource Links we introduce two new entity types that allow us to model the data from third-party systems in Contentful. These entities are:
 
-- `Resource Provider` - a third-party system that provides resources. Each provider can have multiple resource types.
-- `Resource Type` - a specific type of resource that is provided by a resource provider.
-
-In this example, we have a `TMDB` provider that provides `Movie` and `Person` resource types.
+- `Resource Provider` - a third-party system that provides resources. Each provider can have multiple resource types. In this example, we have a `TMDB` provider.
+- `Resource Type` - a specific type of resource that is provided by a resource provider. In our example, we introduce `Movie` and `Person` resource types.
 
 ## Functions
 
@@ -214,7 +212,6 @@ The form that will save the token when we install the app has been defined in `s
 ## Create resource entities
 
 <!-- TODO: Explain how to run the script to create entities -->
-<!-- TODO: Improve the `resourceCardView` mapping with some better properties -->
 <!-- TODO: Explain how to utilize the code in content modeling -->
 <!-- TODO: Fix / remove generic tests -->
 
