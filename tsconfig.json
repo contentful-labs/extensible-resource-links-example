@@ -7,6 +7,5 @@
     "resolveJsonModule": true,
     "jsx": "react"
   },
-  "include": ["./src/**/*.ts"],
-  "exclude": ["actions", "functions"]
+  "include": ["./src/**/*.ts", "./setupTests.ts", "./functions/**/*.ts"]
 }

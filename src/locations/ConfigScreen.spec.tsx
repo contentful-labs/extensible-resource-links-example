@@ -1,6 +1,7 @@
 import React from 'react';
 import ConfigScreen from './ConfigScreen';
 import { render } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 import { mockCma, mockSdk } from '../../test/mocks';
 
 jest.mock('@contentful/react-apps-toolkit', () => ({
@@ -13,7 +14,9 @@ describe('Config Screen component', () => {
     const { getByText } = render(<ConfigScreen />);
 
     // simulate the user clicking the install button
-    await mockSdk.app.onConfigure.mock.calls[0][0]();
+    await act(async () => {
+      await mockSdk.app.onConfigure.mock.calls[0][0]();
+    });
 
     expect(getByText('Provide the access token for TMDB')).toBeInTheDocument();
   });
