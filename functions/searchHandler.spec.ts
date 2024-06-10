@@ -7,14 +7,14 @@ import {
 } from '../test/mocks';
 
 describe('Search handler', () => {
-  let mock: jest.SpyInstance;
+  let mockApi: jest.SpyInstance;
 
   beforeEach(() => {
-    mock = jest.spyOn(helpers, 'fetchApi');
+    mockApi = jest.spyOn(helpers, 'fetchApi');
   });
 
   it('returns an empty response if TMDB does not return any results', async () => {
-    mock.mockImplementation(() => Promise.resolve(undefined));
+    mockApi.mockImplementation(() => Promise.resolve(undefined));
 
     const response = await searchHandler(createSearchEvent(), context);
     expect(response).toEqual({ items: [], pages: {} });
@@ -22,7 +22,7 @@ describe('Search handler', () => {
 
   it('returns a response with populated items', async () => {
     const tmdbResponse = createTmdbSearchResponse();
-    mock.mockImplementation(() => Promise.resolve(tmdbResponse));
+    mockApi.mockImplementation(() => Promise.resolve(tmdbResponse));
 
     const response = await searchHandler(createSearchEvent(), context);
 
@@ -45,7 +45,7 @@ describe('Search handler', () => {
   });
 
   it('returns a response with next cursor when requested page is not the last one', async () => {
-    mock.mockImplementation(() =>
+    mockApi.mockImplementation(() =>
       Promise.resolve(createTmdbSearchResponse({ page: 0 }))
     );
 
@@ -56,7 +56,7 @@ describe('Search handler', () => {
   });
 
   it('returns a response without next cursor when requested page is the last one', async () => {
-    mock.mockImplementation(() =>
+    mockApi.mockImplementation(() =>
       Promise.resolve(createTmdbSearchResponse({ page: 2 }))
     );
 

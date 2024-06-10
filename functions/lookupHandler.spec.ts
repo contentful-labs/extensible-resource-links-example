@@ -7,22 +7,24 @@ import {
 } from '../test/mocks';
 
 describe('Lookup handler', () => {
-  let mock: jest.SpyInstance;
+  let mockApi: jest.SpyInstance;
 
   beforeEach(() => {
-    mock = jest.spyOn(helpers, 'fetchApi');
+    mockApi = jest.spyOn(helpers, 'fetchApi');
   });
 
   it('returns an empty response if TMDB does not return any results', async () => {
-    mock.mockImplementation(() => Promise.resolve(undefined));
+    mockApi.mockImplementation(() => Promise.resolve(undefined));
 
     const response = await lookupHandler(createLookupEvent(), context);
     expect(response).toEqual({ items: [], pages: {} });
   });
 
   it('returns an empty response if one of TMDB requests fails', async () => {
-    mock.mockImplementation(() => Promise.resolve(createTmdbLookupResponse()));
-    mock.mockImplementationOnce(() => Promise.resolve(undefined));
+    mockApi.mockImplementation(() =>
+      Promise.resolve(createTmdbLookupResponse())
+    );
+    mockApi.mockImplementationOnce(() => Promise.resolve(undefined));
 
     const response = await lookupHandler(createLookupEvent(), context);
 
@@ -31,10 +33,10 @@ describe('Lookup handler', () => {
 
   it('returns a response with populated items', async () => {
     const event = createLookupEvent();
-    mock.mockImplementationOnce(() =>
+    mockApi.mockImplementationOnce(() =>
       Promise.resolve(createTmdbLookupResponse(Number(event.lookupBy.urns[0])))
     );
-    mock.mockImplementationOnce(() =>
+    mockApi.mockImplementationOnce(() =>
       Promise.resolve(createTmdbLookupResponse(Number(event.lookupBy.urns[1])))
     );
 
