@@ -1,12 +1,14 @@
 import {
   FunctionEvent,
-  FunctionEventContext,
-  FunctionEventHandler,
-  FunctionEventType
+  FunctionEventContext
 } from '@contentful/node-apps-toolkit';
-import { ResourcesSearchRequest, searchHandler } from './searchHandler';
-import { ResourcesLookupRequest, lookupHandler } from './lookupHandler';
-import { AppInstallationParameters } from './types';
+import { searchHandler } from './searchHandler';
+import { lookupHandler } from './lookupHandler';
+import { AppInstallationParameters } from './types/common';
+import {
+  ResourcesLookupRequest,
+  ResourcesSearchRequest
+} from './types/handler';
 
 type Event = FunctionEvent | ResourcesSearchRequest | ResourcesLookupRequest;
 
