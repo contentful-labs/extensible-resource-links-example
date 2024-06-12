@@ -180,7 +180,7 @@ Before we can upload our code to Contentful, we need to create an _App Definitio
 1. Run the script `npm run create-app-definition`. You will see a prompt asking for the name of the app. Enter `TMDB App` and press Enter to confirm.
 2. Next prompt will ask for the location where the app will be rendered. Select _App configuration screen_ and press Enter to confirm.
 3. Next step asks about the endpoint used for the app. As the default value is correct, press Enter to confirm.
-4. Next question asks us if we would like to specify App Parameters. Type `Y` and press Enter. Select _Instance_, then type `TMDB access token` as _Parameter name_ and `tmdbAccessToken` as _ID_. Select _Symbol_ as type and mark it as required.
+4. Next question asks us if we would like to specify App Parameters. Type `Y` and press Enter. Select _Installation_, then type `TMDB access token` as _Parameter name_ and `tmdbAccessToken` as _ID_. Select _Symbol_ as type and mark it as required.
 5. Next prompt will ask for the access token. In the background, a new browser tab will open with a Contentful token value (you might need to log in first). Copy the token and paste it into the terminal. Press Enter to confirm.
 6. In the next step we need to define which organization the app will be associated with. Select the organization you want to use and press Enter to confirm.
 
