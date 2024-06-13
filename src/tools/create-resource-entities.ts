@@ -6,6 +6,7 @@ import assert from 'assert';
 import {
   APIError,
   APIResourceProvider,
+  APIResourceType,
   ResourceProvider,
   ResourceType
 } from './types';
@@ -32,7 +33,7 @@ assert.ok(
 );
 
 type ResourceProviderResult = APIError | APIResourceProvider;
-type ResourceTypeResult = APIError;
+type ResourceTypeResult = APIError | APIResourceType;
 
 const fetchApi = async <T>(
   url: string,

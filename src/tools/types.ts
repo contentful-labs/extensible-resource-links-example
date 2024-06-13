@@ -1,8 +1,16 @@
+type Link<T> = {
+  sys: {
+    type: string;
+    linkType: T;
+    id: string;
+  };
+};
+
 export type ResourceProvider = {
   sys: { id: string };
   name: string;
   type: string;
-  function: { sys: { id: string; type: string; linkType: string } };
+  function: Link<'Function'>;
 };
 
 export type ResourceType = {
@@ -25,30 +33,35 @@ export type APIResourceProvider = {
     type: 'ResourceProvider';
     createdAt: string;
     updatedAt: string;
-    createdBy: {
-      sys: { type: string; linkType: string; id: string };
-    };
-    updatedBy: {
-      sys: { type: string; linkType: string; id: string };
-    };
-    organization: {
-      sys: {
-        type: string;
-        linkType: string;
-        id: string;
-      };
-    };
-    appDefinition: {
-      sys: {
-        type: 'string';
-        linkType: string;
-        id: string;
-      };
-    };
+    createdBy: Link<'User'>;
+    updatedBy: Link<'User'>;
+    organization: Link<'Organization'>;
+    appDefinition: Link<'AppDefinition'>;
   };
   name: string;
   type: 'function';
-  function: { sys: { type: string; linkType: string; id: string } };
+  function: Link<'Function'>;
+};
+
+export type APIResourceType = {
+  sys: {
+    id: string;
+    type: 'ResourceType';
+    createdAt: string;
+    updatedAt: string;
+    createdBy: Link<'User'>;
+    updatedBy: Link<'User'>;
+    resourceProvider: Link<'ResourceProvider'>;
+    appDefinition: Link<'AppDefinition'>;
+  };
+  name: string;
+  type: 'function';
+  defaultFieldMapping: {
+    title: string;
+    subtitle: string;
+    externalUrl: string;
+    image: { url: string; altText: string };
+  };
 };
 
 export type APIError = {
