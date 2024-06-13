@@ -1,6 +1,6 @@
-import tmdb from './entities/tmdb.json';
-import movie from './entities/movie.json';
-import person from './entities/person.json';
+import tmdbJson from './entities/tmdb.json';
+import movieJson from './entities/movie.json';
+import personJson from './entities/person.json';
 import manifest from '../../contentful-app-manifest.json';
 import assert from 'assert';
 import {
@@ -34,6 +34,10 @@ assert.ok(
 
 type ResourceProviderResult = APIError | APIResourceProvider;
 type ResourceTypeResult = APIError | APIResourceType;
+
+const tmdb = tmdbJson as ResourceProvider;
+const movie = movieJson as ResourceType;
+const person = personJson as ResourceType;
 
 const fetchApi = async <T>(
   url: string,
