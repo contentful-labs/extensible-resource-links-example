@@ -1,7 +1,7 @@
 {
   "sys": { "id": "TMDB:Person" },
   "name": "Person",
-  "resourceCardView": {
+  "defaultFieldMapping": {
     "title": "{ /name }",
     "subtitle": "Person ID: {/id}",
     "externalUrl": "{ /externalUrl }",

@@ -1,7 +1,5 @@
 {
-  "sys": {
-    "id": "TMDB"
-  },
+  "sys": { "id": "TMDB" },
   "name": "The Movie",
   "type": "function",
   "function": {
