@@ -25,6 +25,16 @@ assert.ok(
   `CONTENTFUL_ORG_ID environment variable must be defined`
 );
 
+assert.ok(
+  appDefinitionId !== '',
+  `CONTENTFUL_APP_DEF_ID environment variable must be defined`
+);
+
+assert.ok(
+  accessToken !== '',
+  `CONTENTFUL_ACCESS_TOKEN environment variable must be defined`
+);
+
 const tmdb = tmdbJson as ResourceProvider;
 const movie = movieJson as ResourceType;
 const person = personJson as ResourceType;
