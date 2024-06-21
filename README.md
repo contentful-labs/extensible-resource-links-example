@@ -311,8 +311,6 @@ The function properties are as follows:
 - `allowedNetworks`: A list of endpoints the Function should be allowed to connect to. This is a security feature to prevent unauthorized access to your network.
 - `accepts`: An array of event types the Function can handle.
 
-It contains
-
 # Available Scripts
 
 In the project directory, you can run:
