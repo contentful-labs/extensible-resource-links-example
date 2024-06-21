@@ -22,6 +22,7 @@ This project was bootstrapped with [Create Contentful App](https://github.com/co
   - [Response](#response)
   - [Example](#example)
 - [Property mapping for rendering in the Web app](#property-mapping-for-rendering-in-the-web-app)
+- [App manifest](#app-manifest)
 
 5. [Available Scripts](#available-scripts)
 
@@ -295,6 +296,22 @@ The mapping between these components and external system data is established usi
 | badge.variant | string (required) |
 
 Definitions of `Movie` and `Person` _Resource Type_ representations can be found in `src/tools/entities/movie.json` and `src/tools/entities/person.json` files respectively.
+
+## App manifest
+
+The app manifest is a JSON file that descrives the app and its capabilities. It contains a `functions` property which is an array of functions the app can run. Curretly, Contentful Apps can only be assosiated with one function, therefore you can only have one function in the array.
+
+The function properties are as follows:
+
+- `id`: The _id_ of the Function.
+- `name`: A readable name for the Function.
+- `description`: A brief description of the Function.
+- `path`: This is the path to the transpiled source file of the Function in your bundle. Exposing a `handler` function.
+- `entryFile`: Path pointing to the source file of the Function. Exposing a `handler` function.
+- `allowedNetworks`: A list of endpoints the Function should be allowed to connect to. This is a security feature to prevent unauthorized access to your network.
+- `accepts`: An array of event types the Function can handle.
+
+It contains
 
 # Available Scripts
 
