@@ -2,29 +2,132 @@ This app demonstrates external resource links using the [TMDB API](https://devel
 
 This project was bootstrapped with [Create Contentful App](https://github.com/contentful/create-contentful-app).
 
+# Table of Contents
+
+1. [Prerequisites](#prerequisites)
+2. [Description](#description)
+3. [Instructions to create and run the app](#instructions-to-create-and-run-the-app)
+
+- [Creating a custom app definition](#creating-a-custom-app-definition)
+- [Building and uploading the app](#building-and-uploading-the-app)
+  - [Running the app locally](#running-the-app-locally)
+- [Creating resource entities](#creating-resource-entities)
+- [Installing the app](#installing-the-app)
+
+4. [Code structure](#code-structure)
+
+- [Functions](#functions)
+  - [Search request](#search-request)
+  - [Lookup request](#lookup-request)
+  - [Response](#response)
+  - [Example](#example)
+- [Property mapping for rendering in the Web app](#property-mapping-for-rendering-in-the-web-app)
+- [App manifest](#app-manifest)
+
+5. [Available Scripts](#available-scripts)
+
 # Prerequisites
 
 We're assuming you are familiar with the following concepts:
 
 - [App Framework](https://www.contentful.com/developers/docs/extensibility/app-framework/), including [App Definition](https://www.contentful.com/developers/docs/extensibility/app-framework/app-definition/) and [App Installation](https://www.contentful.com/developers/docs/extensibility/app-framework/app-installation/)
 - [Functions](https://www.contentful.com/developers/docs/extensibility/app-framework/functions/)
-
-A valid API token for the TMDB API is required to run this app. You can get one by signing up at [TMDB](https://www.themoviedb.org/signup).
+- A valid API token for the TMDB API is required to run this app. You can get one by signing up at [TMDB](https://www.themoviedb.org/signup).
+- Your system has installed:
+  - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+  - The latest LTS version of [Node.js](https://nodejs.org/en/)
 
 # Description
 
-Extensible Resource Links provide a streamlined method to connect and work with third-party systems in Contentful, ensuring standardized operations when configuring content model architecture, as well as creating and retrieving content with entities from these systems.
+Contentful provides a method for integrating content from external sources using the [App Framework](https://www.contentful.com/developers/docs/extensibility/app-framework/). The [App Marketplace](https://www.contentful.com/marketplace/) currently offers complete solutions tailored for specific systems such as Shopify or Commercetools. Nevertheless, connecting to other systems necessitates the development of custom frontend apps with bespoke implementation.
 
-This means you have a standardized way of connecting third-party content with Contentful content from different spaces.
+To overcome these challenges, we are enhancing the process by offering a more streamlined and cohesive approach to linking third-party systems through existing content model Reference Fields. This upgraded version of fields is referred to as _Extensible Resource Links_.
 
-This project aims to provide an example of the setup for Extensible Resource Links. In this example, we are connecting to the TMDB API to retrieve `Movie` and `Person` entities, which can be rendered in Contentful Web UI.
+This example is designed to help you build an app with the beta version of the extended linking feature. Currently, the application setup primarily revolves around command line operations; however, you will also have the ability to view the connected content displayed in the user interface. The external system we will be connecting to in this example is [the Movie Database](https://www.themoviedb.org/).
 
-## Entities
+With Extensible Resource Links we introduce the following new entity types that allow us to model the data from third-party systems in Contentful:
 
-With Extensible Resource Links we introduce two new entity types that allow us to model the data from third-party systems in Contentful. These entities are:
+- `Resource Provider` - a third-party system that provides resources. Each provider can have multiple resource types. In our example: a `TMDB` provider.
+- `Resource Type` - a specific type of resource (not the resource itself) that is provided by a resource provider. In our example: `Movie` and `Person`.
+- `Resource` - a representation of real data in an external system. For instance, `Jaws`.
 
-- `Resource Provider` - a third-party system that provides resources. Each provider can have multiple resource types. In this example, we have a `TMDB` provider.
-- `Resource Type` - a specific type of resource that is provided by a resource provider. In our example, we introduce `Movie` and `Person` resource types.
+# Instructions to create and run the app
+
+## Cloning the code
+
+To get started, you need to make a local copy of the code and install the necessary dependencies by running the following commands (replace `<name-of-your-app>` with the name of your choice):
+
+```bash
+npx create-contentful-app@latest <name-of-your-app> --source https://github.com/contentful-labs/extensible-resource-links-example
+cd <name-of-your-app>
+npm install
+```
+
+## Creating a custom app definition
+
+Before we can upload our code to Contentful, we need to create an _App Definition_ for the app that will be associated with our code. To do this, run the script `npm run create-app-definition`. You will need to answer the following questions on the terminal. Feel free to proceed with the default options provided.
+
+1. **Name of your application**. This is how your app will be named and it will show up in a few places throughout the UI. The default is the name of the folder you created.
+2. **Select where your app can be rendered**. This shows potential [app locations](https://www.contentful.com/developers/docs/extensibility/app-framework/locations/) where an app can be rendered within the Contentful Web app. Select App configuration screen, as we will utilize the configuration screen to provide the\*\* API token for the app.
+3. **Contentful CMA endpoint URL**. This refers to the url being used to interact with Contentful's Management APIs.
+4. **App Parameters**. These are configurable values that can be used to set default values or define custom validation rules. As we need to define these for the API token:
+
+- Opt for Y to advance with the process of defining the parameters.
+- Choose Installation.
+- Input TMDB access token as Parameter name and tmdbAccessToken as ID.
+- Select Symbol as type and mark the parameter as required.
+
+5. Next steps will lead you through the process of providing a Contentful access token to the application and specifying the organization to which the application should be assigned. **Please ensure that the organization ID you select here is the same as the ID of the organization that has the Extensible Resource Links feature turned on**.
+
+You now have a basic application that is prepared to be enriched with additional information in order to enable the example project you downloaded to function properly.
+
+## Building and uploading the app
+
+After creating the app definition, we can take care of uploading the code by running these commands:
+
+```bash
+npm run build
+npm run upload
+```
+
+The interactive CLI will prompt you to provide few additional details, such as a CMA endpoint URL. Select _Yes_ when prompted if you’d like to activate the bundle after upload.
+
+### Running the app locally
+
+The steps above will upload the app to Contentful's infrastructure. However, you can also run the app locally to be able to easier debug the code. To do this:
+
+- Run `npm run open-settings`, which will open the web page with the App details.
+- Deselect the _Hosted by Contentful_ option and fill the text field below with `http://localhost:3000`.
+- Save the changes.
+
+This process is reversible and at any point you can go back to the setup that uses the bundle uploaded to Contentful's infrastructure.
+
+## Creating resource entities
+
+Executing the provided command in your terminal will generate three extra entities within the app definition, which are described in more details in [[#]]
+
+```bash
+npm run create-resource-entities
+```
+
+This will tell Contentful that we want to connect to TMDB via our function and that the same function can provide `TMDB:Movie` and `TMDB:Person` resource types.
+
+> create-resource-entities script generates new entities within the system, and prints out a minimal log when the operation has succeeded.
+>
+> If you would like to list all the previously created entities, you can utilize a similar script that prints out more verbose details: `npm run show-resource-entities`.
+
+## Installing the app
+
+- After you successfully upload your app, install it to an existing space by running the command: `npm run install-app`.
+- Select the space and environment in which you would prefer to install the example app from the dialog that appears. You will have to grant access to the space the app will be installed in.
+- After granting access, the configuration screen, which is rendered by the <ConfigScreen /> component, is displayed. Put in your TMDB token in the form.
+- Click Save.
+
+Your app is now installed and configured.
+
+The form that will save the token when we install the app has been defined in `src/locations/ConfigScreen.tsx`. More information how configuration screens are set up can be found in [this App Configuration tutorial](https://www.contentful.com/developers/docs/extensibility/app-framework/app-configuration/).
+
+# Code structure
 
 ## Functions
 
@@ -92,11 +195,22 @@ type ResourcesLookupRequest<
 
 ### Response
 
+Functions are designed without prior knowledge of the response data structure from third-party systems. Therefore, an additional transformation is required to ensure that all Function events return responses with a consistent shape of `Resource`s. This transformation is carried out by the `transformResult` function located in the `function/helpers.ts` file. In our example, we are expecting `Resource` to conform to a particular shape:
+
+```typescript
+type Resource = {
+  id: string;
+  name: string;
+  image?: {
+    url: string;
+  };
+  externalUrl: string;
+};
+```
+
 Both events return the same shape of the response:
 
 ```typescript
-type Resource = Record<string, unknown>;
-
 type ResourcesSearchResponse = {
   items: Resource[];
   pages: {
@@ -171,68 +285,42 @@ In the examples above, we would expect:
 - the search event to return the resource with the URN `31` (Tom Hanks),
 - the lookup event to return the resources with the URNs `31` (Tom Hanks) and `1245` (Scarlett Johansson).
 
-# Instructions to create and run the app
+## Property mapping for rendering in the Web app
 
-## Creating a custom app definition
+Contentful web app displays entries using components that require specific data structures to fill their UI elements.
 
-Before we can upload our code to Contentful, we need to create an _App Definition_ for the app that will be associated with our code. To do this:
+The mapping between these components and external system data is established using [JSON pointers](https://datatracker.ietf.org/doc/html/rfc6901). This mapping is defined in the `defaultFieldMapping` property of each `Resource Type` and must adhere to the structure used for mapping the values shown in the entry component:
 
-1. Run the script `npm run create-app-definition`. You will see a prompt asking for the name of the app. Enter `TMDB App` and press Enter to confirm.
-2. Next prompt will ask for the location where the app will be rendered. Select _App configuration screen_ and press Enter to confirm.
-3. Next step asks about the endpoint used for the app. As the default value is correct, press Enter to confirm.
-4. Next question asks us if we would like to specify App Parameters. Type `Y` and press Enter. Select _Installation_, then type `TMDB access token` as _Parameter name_ and `tmdbAccessToken` as _ID_. Select _Symbol_ as type and mark it as required.
-5. Next prompt will ask for the access token. In the background, a new browser tab will open with a Contentful token value (you might need to log in first). Copy the token and paste it into the terminal. Press Enter to confirm.
-6. In the next step we need to define which organization the app will be associated with. Select the organization you want to use and press Enter to confirm.
+| property      | type              |
+| ------------- | ----------------- |
+| title         | string (required) |
+| subtitle      | string (optional) |
+| description   | string (optional) |
+| externalUrl   | string (optional) |
+| image         | object (optional) |
+| image.url     | string (required) |
+| image.altText | string (optional) |
+| badge         | object (optional) |
+| badge.label   | string (required) |
+| badge.variant | string (required) |
 
-Your custom app is now configured. As a final step, click Save to persist the app configuration.
+Definitions of `Movie` and `Person` _Resource Type_ representations can be found in `src/tools/entities/movie.json` and `src/tools/entities/person.json` files respectively.
 
-## Running and installing the app
+## App manifest
 
-We can start with running the code locally to see how it works. To do this, execute:
+The app manifest is a JSON file that descrives the app and its capabilities. It contains a `functions` property which is an array of functions the app can run. Curretly, Contentful Apps can only be assosiated with one function, therefore you can only have one function in the array.
 
-```bash
-$ npm install
-$ npm run build
-$ npm run start
-```
+The function properties are as follows:
 
-Next, install the app. To install the app:
+- `id`: The _id_ of the Function.
+- `name`: A readable name for the Function.
+- `description`: A brief description of the Function.
+- `path`: This is the path to the transpiled source file of the Function in your bundle. Exposing a `handler` function.
+- `entryFile`: Path pointing to the source file of the Function. Exposing a `handler` function.
+- `allowedNetworks`: A list of endpoints the Function should be allowed to connect to. This is a security feature to prevent unauthorized access to your network.
+- `accepts`: An array of event types the Function can handle.
 
-1. Go to your space and click _Apps_ in the top menu bar.
-2. Select _Custom Apps_. The list of custom apps available in your space is displayed.
-3. Click the _Install_ button next to your app (which we set up earlier in the tutorial).
-   NOTE: You have to grant access to your space the app will be installed in.
-4. After granting access, the configuration screen, which is rendered by the <ConfigScreen /> component, is displayed. Put in your TMDB token in the form.
-5. Click Save.
-
-Your app is now installed and configured.
-
-The form that will save the token when we install the app has been defined in `src/locations/ConfigScreen.tsx`. More information how configuration screens are set up can be found in [this App Configuration tutorial](https://www.contentful.com/developers/docs/extensibility/app-framework/app-configuration/).
-
-## Create resource entities
-
-<!-- TODO: Explain how to run the script to create entities -->
-<!-- TODO: Explain how to utilize the code in content modeling -->
-<!-- TODO: Fix / remove generic tests -->
-
-## Uploading the bundle
-
-So far the code has been running locally on your machine. Functions can be also deployed to Contentful's infrastructure. To do this, we need to build and upload the bundle to Contentful:
-
-```bash
-$ npm run build
-$ npm run upload
-```
-
-The `upload` command will guide you through the deployment process and ask for all required arguments.
-
-At any moment you can go back to the setup of running the code locally instead of uploading the bundle to Contentful's infrastructure by the following steps:
-
-- Run `npm run open-settings`, which will open the web page with the App details.
-- Deselect the _Hosted by Contentful_ option and fill the text field below with `http://localhost:3000`.
-- Save the changes.
-
-## Available Scripts
+# Available Scripts
 
 In the project directory, you can run:
 
@@ -270,10 +358,22 @@ For this command to work, the following environment variables must be set:
 - `CONTENTFUL_APP_DEF_ID` - The ID of the app to which to add the bundle
 - `CONTENTFUL_ACCESS_TOKEN` - A personal [access token](https://www.contentful.com/developers/docs/references/content-management-api/#/reference/personal-access-tokens)
 
+#### `npm run open-settings`
+
+Opens the settings in the Contentful web app so that you can use the UI to change the settings of an [App Definition](https://www.contentful.com/developers/docs/extensibility/app-framework/app-definition/).
+
+#### `npm run install-app`
+
+Opens a dialog to select the space and environment where the app associated with the given [App Definition](https://www.contentful.com/developers/docs/extensibility/app-framework/app-definition/) should be installed.
+
 #### `npm run create-app-definition`
 
-<!-- TODO -->
+An interactive CLI that will prompt you to provide necessary details to create an [App Definition](https://www.contentful.com/developers/docs/extensibility/app-framework/app-definition/).
 
 #### `npm run create-resource-entities`
 
-<!-- TODO -->
+A script that reads the `entities` folder and creates new entities within the system. It will print out a minimal log when the operation has succeeded.
+
+#### `npm run show-resource-entities`
+
+A script that lists all the previously created entities. It will print out more verbose details about the entities.
