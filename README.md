@@ -53,6 +53,16 @@ With Extensible Resource Links we introduce the following new entity types that 
 
 # Instructions to create and run the app
 
+## Cloning the code
+
+To get started, you need to make a local copy of the code and install the necessary dependencies by running the following commands (replace `<name-of-your-app>` with the name of your choice):
+
+```bash
+npx create-contentful-app@latest <name-of-your-app> --source https://github.com/contentful-labs/extensible-resource-links-example
+cd <name-of-your-app>
+npm install
+```
+
 ## Creating a custom app definition
 
 Before we can upload our code to Contentful, we need to create an _App Definition_ for the app that will be associated with our code. To do this, run the script `npm run create-app-definition`. You will need to answer the following questions on the terminal. Feel free to proceed with the default options provided.
@@ -76,7 +86,6 @@ You now have a basic application that is prepared to be enriched with additional
 After creating the app definition, we can take care of uploading the code by running these commands:
 
 ```bash
-npm install
 npm run build
 npm run upload
 ```
