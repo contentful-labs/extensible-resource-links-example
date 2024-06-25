@@ -15,7 +15,7 @@ export const transformResult =
     const name = 'title' in result ? result.title : result.name;
 
     return {
-      id: String(result.id),
+      urn: String(result.id),
       name,
       ...(imageUrl && {
         image: {

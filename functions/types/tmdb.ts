@@ -13,7 +13,7 @@ type Movie = {
 export type TmdbItem = Movie | Person;
 
 export type Resource = Omit<TmdbItem, 'id'> & {
-  id: string;
+  urn: string;
   name: string;
   image?: {
     url: string;

@@ -10,7 +10,7 @@ describe('Transforming the result', () => {
     };
     const transformed = transformResult('https://example.com')(result);
     expect(transformed).toEqual({
-      id: '1',
+      urn: '1',
       name: 'The Movie',
       image: {
         url: 'https://image.tmdb.org/t/p/w200/poster.jpg'
@@ -27,7 +27,7 @@ describe('Transforming the result', () => {
     };
     const transformed = transformResult('https://example.com')(result);
     expect(transformed).toEqual({
-      id: '2',
+      urn: '2',
       name: 'A Person',
       image: {
         url: 'https://image.tmdb.org/t/p/w200/profile.jpg'
