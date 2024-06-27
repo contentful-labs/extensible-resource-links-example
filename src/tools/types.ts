@@ -8,7 +8,6 @@ type Link<T> = {
 
 export type ResourceProvider = {
   sys: { id: string };
-  name: string;
   type: string;
   function: Link<'Function'>;
 };
@@ -38,7 +37,6 @@ export type APIResourceProvider = {
     organization: Link<'Organization'>;
     appDefinition: Link<'AppDefinition'>;
   };
-  name: string;
   type: 'function';
   function: Link<'Function'>;
 };
