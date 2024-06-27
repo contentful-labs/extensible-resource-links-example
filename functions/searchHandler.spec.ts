@@ -30,13 +30,13 @@ describe('Search handler', () => {
     expect(response.items).toHaveLength(tmdbResponse.results.length);
     expect(response.items).toEqual([
       {
-        id: '1',
+        urn: '1',
         name: 'John Doe',
         externalUrl: 'https://www.themoviedb.org/person/1',
         image: { url: 'https://image.tmdb.org/t/p/w200/profile1.jpg' }
       },
       {
-        id: '2',
+        urn: '2',
         name: 'John Doe',
         externalUrl: 'https://www.themoviedb.org/person/2',
         image: { url: 'https://image.tmdb.org/t/p/w200/profile2.jpg' }

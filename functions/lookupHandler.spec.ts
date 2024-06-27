@@ -45,13 +45,13 @@ describe('Lookup handler', () => {
     expect(response).toHaveProperty('items');
     expect(response.items).toEqual([
       {
-        id: '15',
+        urn: '15',
         name: 'John Doe',
         externalUrl: 'https://www.themoviedb.org/person/15',
         image: { url: 'https://image.tmdb.org/t/p/w200/profile15.jpg' }
       },
       {
-        id: '22',
+        urn: '22',
         name: 'John Doe',
         externalUrl: 'https://www.themoviedb.org/person/22',
         image: { url: 'https://image.tmdb.org/t/p/w200/profile22.jpg' }
