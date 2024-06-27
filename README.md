@@ -7,79 +7,107 @@ This project was bootstrapped with [Create Contentful App](https://github.com/co
 1. [Prerequisites](#prerequisites)
 2. [Description](#description)
 3. [Instructions to create and run the app](#instructions-to-create-and-run-the-app)
+    - [Copying the example](#copying-the-example)
+    - [Creating a custom app definition](#creating-a-custom-app-definition)
+    - [Building and uploading the app](#building-and-uploading-the-app)
+      - [Running the app locally](#running-the-app-locally)
+    - [Creating resource entities](#creating-resource-entities)
+    - [Installing the app](#installing-the-app)
+4. [Entities overview](#entities-overview)
+5. [Code structure](#code-structure)
+    - [Functions](#functions)
+      - [Search request](#search-request)
+      - [Lookup request](#lookup-request)
+      - [Response](#response)
+      - [Example](#example)
+    - [Property mapping for rendering in the Web app](#property-mapping-for-rendering-in-the-web-app)
+    - [App manifest](#app-manifest)
+6. [Available Scripts](#available-scripts)
 
-- [Creating a custom app definition](#creating-a-custom-app-definition)
-- [Building and uploading the app](#building-and-uploading-the-app)
-  - [Running the app locally](#running-the-app-locally)
-- [Creating resource entities](#creating-resource-entities)
-- [Installing the app](#installing-the-app)
-
-4. [Code structure](#code-structure)
-
-- [Functions](#functions)
-  - [Search request](#search-request)
-  - [Lookup request](#lookup-request)
-  - [Response](#response)
-  - [Example](#example)
-- [Property mapping for rendering in the Web app](#property-mapping-for-rendering-in-the-web-app)
-- [App manifest](#app-manifest)
-
-5. [Available Scripts](#available-scripts)
 
 # Prerequisites
 
-We're assuming you are familiar with the following concepts:
-
-- [App Framework](https://www.contentful.com/developers/docs/extensibility/app-framework/), including [App Definition](https://www.contentful.com/developers/docs/extensibility/app-framework/app-definition/) and [App Installation](https://www.contentful.com/developers/docs/extensibility/app-framework/app-installation/)
-- [Functions](https://www.contentful.com/developers/docs/extensibility/app-framework/functions/)
+- We're assuming you are familiar with the following concepts:
+  - [App Framework](https://www.contentful.com/developers/docs/extensibility/app-framework/), including [App Definition](https://www.contentful.com/developers/docs/extensibility/app-framework/app-definition/) and [App Installation](https://www.contentful.com/developers/docs/extensibility/app-framework/app-installation/)
+  - [Functions](https://www.contentful.com/developers/docs/extensibility/app-framework/functions/)
+- The space where you will install the application has the [Orchestration](https://www.contentful.com/help/orchestration/) feature enabled.
 - A valid API token for the TMDB API is required to run this app. You can get one by signing up at [TMDB](https://www.themoviedb.org/signup).
+> **NOTE:**
+> TMDB does not generate the API token instantly. Make sure you initiate the signup process in advance to prevent any hindrance to your progress.
 - Your system has installed:
   - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
   - The latest LTS version of [Node.js](https://nodejs.org/en/)
 
+> **NOTE:**
+> Please make sure you consistently choose the same **Organization ID** that has the Extensible Resource Links functionality during any setup steps that require you to select the organization.
+
 # Description
 
-Contentful provides a method for integrating content from external sources using the [App Framework](https://www.contentful.com/developers/docs/extensibility/app-framework/). The [App Marketplace](https://www.contentful.com/marketplace/) currently offers complete solutions tailored for specific systems such as Shopify or Commercetools. Nevertheless, connecting to other systems necessitates the development of custom frontend apps with bespoke implementation.
+Contentful provides a method for integrating content from external sources using the [App Framework](https://www.contentful.com/developers/docs/extensibility/app-framework/). The [App Marketplace](https://www.contentful.com/marketplace/) currently offers complete solutions tailored for specific systems such as [Shopify](https://www.contentful.com/help/external-references-with-shopify/) or [commercetools](https://www.contentful.com/help/external-references-with-commercetools/). However, connecting to other systems requires developing custom frontend apps with bespoke implementation.
 
-To overcome these challenges, we are enhancing the process by offering a more streamlined and cohesive approach to linking third-party systems through existing content model Reference Fields. This upgraded version of fields is referred to as _Extensible Resource Links_.
+To overcome these challenges, we offer a more streamlined and cohesive approach to linking third-party systems through existing content model Reference Fields. This upgraded version of fields is referred to as **Extensible Resource Links**.
 
-This example is designed to help you build an app with the beta version of the extended linking feature. Currently, the application setup primarily revolves around command line operations; however, you will also have the ability to view the connected content displayed in the user interface. The external system we will be connecting to in this example is [the Movie Database](https://www.themoviedb.org/).
+This example is designed to walk you through the beta version of the extended linking feature. Currently, the application setup primarily revolves around command-line operations. However, you can also view the connected content displayed in the user interface. 
+For the purpose of this example, we will be connecting to the [Movie Database](https://www.themoviedb.org/) external system.
 
 With Extensible Resource Links we introduce the following new entity types that allow us to model the data from third-party systems in Contentful:
 
 - `Resource Provider` - a third-party system that provides resources. Each provider can have multiple resource types. In our example: a `TMDB` provider.
-- `Resource Type` - a specific type of resource (not the resource itself) that is provided by a resource provider. In our example: `Movie` and `Person`.
+- `Resource Type` - a specific type of resource (not the resource itself) that is provided by a resource provider. In our example: `Movie` and `Person` .
 - `Resource` - a representation of real data in an external system. For instance, `Jaws`.
 
 # Instructions to create and run the app
 
-## Cloning the code
+## Copying the example
 
-To get started, you need to make a local copy of the code and install the necessary dependencies by running the following commands (replace `<name-of-your-app>` with the name of your choice):
+To get started with your application, you need to make a local copy of the example code by running the following command in your terminal. 
+
+> **NOTE:**
+> Make sure you replace `<name-of-your-app>` with the name of your choice.
 
 ```bash
 npx create-contentful-app@latest <name-of-your-app> --source https://github.com/contentful-labs/extensible-resource-links-example
+```
+
+Once the process finishes, navigate to the directory that was created by running this command:
+
+```bash
 cd <name-of-your-app>
-npm install
+```
+
+To complete the process, it is necessary to install all dependencies of the project by executing the following command:
+
+```bash
+npm i
 ```
 
 ## Creating a custom app definition
 
-Before we can upload our code to Contentful, we need to create an _App Definition_ for the app that will be associated with our code. To do this, run the script `npm run create-app-definition`. You will need to answer the following questions on the terminal. Feel free to proceed with the default options provided.
+To see your app within Contentful, you must first set it up. To do that, we will create an app definition, which is an entity that represents an app in Contentful and stores general information about it.
 
-1. **Name of your application**. This is how your app will be named and it will show up in a few places throughout the UI. The default is the name of the folder you created.
-2. **Select where your app can be rendered**. This shows potential [app locations](https://www.contentful.com/developers/docs/extensibility/app-framework/locations/) where an app can be rendered within the Contentful Web app. Select App configuration screen, as we will utilize the configuration screen to provide the\*\* API token for the app.
-3. **Contentful CMA endpoint URL**. This refers to the url being used to interact with Contentful's Management APIs.
+To create the app definition, run this command:
+
+```bash
+npm run create-app-definition
+```
+
+You will need to answer the following questions on the terminal. Feel free to proceed with the default options provided.
+
+1. **Name of your application**. This is how your app will be named and it will be displayed in a few places throughout the UI. The default is the name of the folder you created.
+2. **Select where your app can be rendered**. This shows potential [app locations](https://www.contentful.com/developers/docs/extensibility/app-framework/locations/) where an app can be rendered within the Contentful Web app. Select **App configuration screen**, as we will utilize the configuration screen to provide the API token for the app.
+3. **Contentful CMA endpoint URL**. This refers to the URL used to interact with Contentful's Management APIs.
 4. **App Parameters**. These are configurable values that can be used to set default values or define custom validation rules. As we need to define these for the API token:
 
-- Opt for Y to advance with the process of defining the parameters.
-- Choose Installation.
-- Input TMDB access token as Parameter name and tmdbAccessToken as ID.
-- Select Symbol as type and mark the parameter as required.
+- Opt for **Y** to advance with the process of defining the parameters.
+- Choose **Installation**.
+- Input `TMDB access token` as **Parameter name** and `tmdbAccessToken` as **ID**.
+- Select **Symbol** as type and mark the parameter as required.
 
-5. Next steps will lead you through the process of providing a Contentful access token to the application and specifying the organization to which the application should be assigned. **Please ensure that the organization ID you select here is the same as the ID of the organization that has the Extensible Resource Links feature turned on**.
+5. The next steps will lead you through the process of providing a Contentful access token to the application and specifying the organization to which the application should be assigned.
+> **NOTE:**
+> Make sure the organization ID you select here is the Organization that has access to the Extensible Resource Links feature.
 
-You now have a basic application that is prepared to be enriched with additional information in order to enable the example project you downloaded to function properly.
+You now have a basic application that can be enriched with additional information that will enable the example project you downloaded to function properly.
 
 ## Building and uploading the app
 
@@ -90,53 +118,105 @@ npm run build
 npm run upload
 ```
 
-The interactive CLI will prompt you to provide few additional details, such as a CMA endpoint URL. Select _Yes_ when prompted if you’d like to activate the bundle after upload.
+The interactive CLI will prompt you to provide additional details, such as a CMA endpoint URL. Select **Yes** when prompted if you’d like to activate the bundle after upload.
 
 ### Running the app locally
 
 The steps above will upload the app to Contentful's infrastructure. However, you can also run the app locally to be able to easier debug the code. To do this:
 
 - Run `npm run open-settings`, which will open the web page with the App details.
-- Deselect the _Hosted by Contentful_ option and fill the text field below with `http://localhost:3000`.
+- Deselect the **Hosted by Contentful** option and fill the text field below with `http://localhost:3000`.
 - Save the changes.
 
 This process is reversible and at any point you can go back to the setup that uses the bundle uploaded to Contentful's infrastructure.
 
 ## Creating resource entities
 
-Executing the provided command in your terminal will generate three extra entities within the app definition, which are described in more details in [[#]]
+Executing the provided command in your terminal will generate three extra entities within the app definition, which are described in more detail under the [Entities Overview](#entities-overview) step.
 
 ```bash
 npm run create-resource-entities
 ```
 
-This will tell Contentful that we want to connect to TMDB via our function and that the same function can provide `TMDB:Movie` and `TMDB:Person` resource types.
+This will tell Contentful that we want to connect to `TMDB` via the function we uploaded in [Building and uploading the app](#building-and-uploading-the-app) step and that the same function can provide `TMDB:Movie` and `TMDB:Person` _Resource Types_.
 
-> create-resource-entities script generates new entities within the system, and prints out a minimal log when the operation has succeeded.
->
+> **NOTE:**
+> `create-resource-entities` script generates new entities within the system, and prints out a minimal log when the operation has succeeded.
+> 
 > If you would like to list all the previously created entities, you can utilize a similar script that prints out more verbose details: `npm run show-resource-entities`.
 
 ## Installing the app
 
-- After you successfully upload your app, install it to an existing space by running the command: `npm run install-app`.
+- After you successfully upload your app, install it to an existing space by running the command: `npm run install-app`
 - Select the space and environment in which you would prefer to install the example app from the dialog that appears. You will have to grant access to the space the app will be installed in.
-- After granting access, the configuration screen, which is rendered by the <ConfigScreen /> component, is displayed. Put in your TMDB token in the form.
-- Click Save.
+- After granting access, the configuration screen, which is rendered by the <ConfigScreen /> component, will be displayed. Input your TMDB API token into the form and proceed to save the changes.
 
-Your app is now installed and configured.
+Your example app is now configured and installed.
 
 The form that will save the token when we install the app has been defined in `src/locations/ConfigScreen.tsx`. More information how configuration screens are set up can be found in [this App Configuration tutorial](https://www.contentful.com/developers/docs/extensibility/app-framework/app-configuration/).
+
+# Entities overview
+
+Below is a representation of how a _Resource Provider_ is structured, using the TMDB app as an illustrative example.
+
+```json
+{
+  "sys": { "id": "TMDB" },
+  "type": "function",
+  "function": {
+    "sys": {
+      "type": "Link",
+      "linkType": "Function",
+      "id": "externalResources"
+    }
+  }
+}
+```
+
+We are representing _Resource Types_ in a similar structure:
+
+```json
+{
+  "sys": { "id": "TMDB:Movie" },
+  "name": "Movie",
+  "defaultFieldMapping": {
+    "title": "{ /name }",
+    "subtitle": "Movie ID: { /urn }",
+    "externalUrl": "{ /externalUrl }",
+    "image": {
+      "url": "{ /image/url }",
+      "altText": "{ /name }"
+    }
+  }
+}
+```
+
+```json
+{
+  "sys": { "id": "TMDB:Person" },
+  "name": "Person",
+  "defaultFieldMapping": {
+    "title": "{ /name }",
+    "subtitle": "Person ID: { /urn }",
+    "externalUrl": "{ /externalUrl }",
+    "image": {
+      "url": "{ /image/url }",
+      "altText": "{ /name }"
+    }
+  }
+}
+```
 
 # Code structure
 
 ## Functions
 
-The Function event handler for Extensible Resource Links can parse two different types of events:
+The example app is using [Functions](https://www.contentful.com/developers/docs/extensibility/app-framework/functions/) to provide a connection between Contentful and the TMDB API. In the `functions/index.ts` file we are defining two events that are necessary for Extensible Resource Links to function properly:
 
 - `search` - retrieval of specific content based on search queries
 - `lookup` - retrieval of specific content based on URNs (IDs)
 
-Example code for these handlers can be found in `functions/lookupHandler.ts` and `functions/searchHandler.ts` files.
+The example code for these handlers can be found in the `functions/lookupHandler.ts` and `functions/searchHandler.ts` files.
 
 ### Search request
 
@@ -156,7 +236,7 @@ type ResourcesSearchRequest = {
 
 | property         | type                          | description                                                                                                                        |
 | ---------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| limit            | number (required)             | Number defining the maximum of items that should be returned                                                                       |
+| limit            | number (required)             | Number defining the maximum items that should be returned                                                                       |
 | pages            | object (optional)             |
 | pages.nextCursor | string (required)             | Cursor string pointing to the specific page of results to be used as a starting point for the request                              |
 | resourceType     | string (required)             | String consisting of the name of the provider and the resource within the provider, in a format `{Provider}:{Type}, eg. TMDB:Movie |
@@ -185,7 +265,7 @@ type ResourcesLookupRequest<
 
 | property         | type                          | description                                                                                                                        |
 | ---------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| limit            | number (required)             | Number defining the maximum of items that should be returned                                                                       |
+| limit            | number (required)             | Number defining the maximum items that should be returned                                                                       |
 | pages            | object (optional)             |
 | pages.nextCursor | string (required)             | Cursor string pointing to the specific page of results to be used as a starting point for the request                              |
 | resourceType     | string (required)             | String consisting of the name of the provider and the resource within the provider, in a format `{Provider}:{Type}, eg. TMDB:Movie |
@@ -194,19 +274,6 @@ type ResourcesLookupRequest<
 | lookupBy.urns    | string[]                      | List of IDs of entities to be fetched                                                                                              |
 
 ### Response
-
-Functions are designed without prior knowledge of the response data structure from third-party systems. Therefore, an additional transformation is required to ensure that all Function events return responses with a consistent shape of `Resource`s. This transformation is carried out by the `transformResult` function located in the `function/helpers.ts` file. In our example, we are expecting `Resource` to conform to a particular shape:
-
-```typescript
-type Resource = {
-  id: string;
-  name: string;
-  image?: {
-    url: string;
-  };
-  externalUrl: string;
-};
-```
 
 Both events return the same shape of the response:
 
@@ -231,6 +298,19 @@ type ResourcesLookupResponse = {
 | items            | Resource[] (required) | List of returned resources                               |
 | pages            | object (required)     |                                                          |
 | pages.nextCursor | string (optional)     | Cursor string to be used to request next page of results |
+
+Functions are designed without prior knowledge of the response data structure from third-party systems. Therefore, an additional transformation is required to ensure that all Function events return responses with a consistent shape of `Resource`s. This transformation is carried out by the `transformResult` function located in the `function/helpers.ts` file. In our example, we are expecting `Resource` to conform to a particular shape:
+
+```typescript
+type Resource = {
+  urn: string;
+  name: string;
+  image?: {
+    url: string;
+  };
+  externalUrl: string;
+};
+```
 
 ### Example
 
@@ -304,7 +384,7 @@ The mapping between these components and external system data is established usi
 | badge.label   | string (required) |
 | badge.variant | string (required) |
 
-Definitions of `Movie` and `Person` _Resource Type_ representations can be found in `src/tools/entities/movie.json` and `src/tools/entities/person.json` files respectively.
+The definitions of `Movie` and `Person` **Resource Type** representations can be found in the `src/tools/entities/movie.json` and `src/tools/entities/person.json` files, respectively.
 
 ## App manifest
 
