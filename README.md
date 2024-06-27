@@ -30,7 +30,7 @@ This project was bootstrapped with [Create Contentful App](https://github.com/co
 - We're assuming you are familiar with the following concepts:
   - [App Framework](https://www.contentful.com/developers/docs/extensibility/app-framework/), including [App Definition](https://www.contentful.com/developers/docs/extensibility/app-framework/app-definition/) and [App Installation](https://www.contentful.com/developers/docs/extensibility/app-framework/app-installation/)
   - [Functions](https://www.contentful.com/developers/docs/extensibility/app-framework/functions/)
-- The space where you will install the application has the [Orchestration](/help/orchestration/) feature enabled.
+- The space where you will install the application has the [Orchestration](https://www.contentful.com/help/orchestration/) feature enabled.
 - A valid API token for the TMDB API is required to run this app. You can get one by signing up at [TMDB](https://www.themoviedb.org/signup).
 > **NOTE:**
 > TMDB does not generate the API token instantly. Make sure you initiate the signup process in advance to prevent any hindrance to your progress.
@@ -43,7 +43,7 @@ This project was bootstrapped with [Create Contentful App](https://github.com/co
 
 # Description
 
-Contentful provides a method for integrating content from external sources using the [App Framework](/developers/docs/extensibility/app-framework/). The [App Marketplace](/marketplace/) currently offers complete solutions tailored for specific systems such as [Shopify](/help/external-references-with-shopify/) or [commercetools](/help/external-references-with-commercetools/). However, connecting to other systems requires developing custom frontend apps with bespoke implementation.
+Contentful provides a method for integrating content from external sources using the [App Framework](https://www.contentful.com/developers/docs/extensibility/app-framework/). The [App Marketplace](https://www.contentful.com/marketplace/) currently offers complete solutions tailored for specific systems such as [Shopify](https://www.contentful.com/help/external-references-with-shopify/) or [commercetools](https://www.contentful.com/help/external-references-with-commercetools/). However, connecting to other systems requires developing custom frontend apps with bespoke implementation.
 
 To overcome these challenges, we offer a more streamlined and cohesive approach to linking third-party systems through existing content model Reference Fields. This upgraded version of fields is referred to as **Extensible Resource Links**.
 
@@ -94,7 +94,7 @@ npm run create-app-definition
 You will need to answer the following questions on the terminal. Feel free to proceed with the default options provided.
 
 1. **Name of your application**. This is how your app will be named and it will be displayed in a few places throughout the UI. The default is the name of the folder you created.
-2. **Select where your app can be rendered**. This shows potential [app locations](/developers/docs/extensibility/app-framework/locations/) where an app can be rendered within the Contentful Web app. Select **App configuration screen**, as we will utilize the configuration screen to provide the API token for the app.
+2. **Select where your app can be rendered**. This shows potential [app locations](https://www.contentful.com/developers/docs/extensibility/app-framework/locations/) where an app can be rendered within the Contentful Web app. Select **App configuration screen**, as we will utilize the configuration screen to provide the API token for the app.
 3. **Contentful CMA endpoint URL**. This refers to the URL used to interact with Contentful's Management APIs.
 4. **App Parameters**. These are configurable values that can be used to set default values or define custom validation rules. As we need to define these for the API token:
 
