@@ -199,7 +199,7 @@ Functions are designed without prior knowledge of the response data structure fr
 
 ```typescript
 type Resource = {
-  id: string;
+  urn: string;
   name: string;
   image?: {
     url: string;

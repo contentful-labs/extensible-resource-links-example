@@ -3,7 +3,7 @@
   "name": "Movie",
   "defaultFieldMapping": {
     "title": "{ /name }",
-    "subtitle": "Movie ID: { /id }",
+    "subtitle": "Movie ID: { /urn }",
     "externalUrl": "{ /externalUrl }",
     "image": {
       "url": "{ /image/url }",

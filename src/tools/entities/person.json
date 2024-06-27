@@ -3,7 +3,7 @@
   "name": "Person",
   "defaultFieldMapping": {
     "title": "{ /name }",
-    "subtitle": "Person ID: { /id }",
+    "subtitle": "Person ID: { /urn }",
     "externalUrl": "{ /externalUrl }",
     "image": {
       "url": "{ /image/url }",
