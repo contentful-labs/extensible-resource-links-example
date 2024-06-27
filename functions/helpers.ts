@@ -16,6 +16,7 @@ export const transformResult =
 
     return {
       id: String(result.id),
+      urn: String(result.id),
       name,
       ...(imageUrl && {
         image: {
