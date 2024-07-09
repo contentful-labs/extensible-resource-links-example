@@ -68,6 +68,7 @@ export const getUrls = (
   return {
     prefixUrl: `https://www.themoviedb.org/${type}`,
     searchUrl: `https://api.themoviedb.org/3/search/${type}?query=${encodedQuery}&include_adult=false&language=en-US&page=${page}`,
+    trendingUrl: `https://api.themoviedb.org/3/trending/${type}/day?language=en-US`,
     lookupUrls: urns.map(
       (urn) => `https://api.themoviedb.org/3/${type}/${urn}?language=en-US`
     )
