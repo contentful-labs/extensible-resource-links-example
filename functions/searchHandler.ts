@@ -33,10 +33,14 @@ export const searchHandler = async (
   event: ResourcesSearchRequest,
   context: FunctionEventContext<AppInstallationParameters>
 ): Promise<ResourcesSearchResponse> => {
-  const { prefixUrl, searchUrl } = getUrls(event.resourceType, {
+  const { prefixUrl, searchUrl, trendingUrl } = getUrls(event.resourceType, {
     query: event.query,
     page: event.pages?.nextCursor ?? '1'
   });
 
-  return fetchSearch(searchUrl, prefixUrl, context);
+  return fetchSearch(
+    !event.query ? trendingUrl : searchUrl,
+    prefixUrl,
+    context
+  );
 };
