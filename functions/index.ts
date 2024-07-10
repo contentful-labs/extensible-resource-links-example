@@ -16,6 +16,10 @@ export const handler = (
   event: Event,
   context: FunctionEventContext<AppInstallationParameters>
 ) => {
+  if (!context.appInstallationParameters.tmdbAccessToken) {
+    throw new Error(`'tmdbAccessToken' installation parameter must be defined.`)
+  }
+
   switch (event.type) {
     case 'resources.search': {
       return searchHandler(event, context);
