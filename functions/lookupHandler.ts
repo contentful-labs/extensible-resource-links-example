@@ -1,10 +1,9 @@
-import { FunctionEventContext } from '@contentful/node-apps-toolkit';
+import {
+  FunctionEventContext,
+  FunctionEventHandler
+} from '@contentful/node-apps-toolkit';
 import { fetchApi, getUrls, transformResult } from './helpers';
 import { AppInstallationParameters } from './types/common';
-import {
-  ResourcesLookupRequest,
-  ResourcesLookupResponse
-} from './types/handler';
 import { TmdbLookupResponse } from './types/tmdb';
 
 const fetchLookup = async (
@@ -30,10 +29,10 @@ const fetchLookup = async (
   );
 };
 
-export const lookupHandler = async (
-  event: ResourcesLookupRequest,
-  context: FunctionEventContext<AppInstallationParameters>
-): Promise<ResourcesLookupResponse> => {
+export const lookupHandler: FunctionEventHandler<
+  'resources.lookup',
+  AppInstallationParameters
+> = async (event, context) => {
   const { lookupUrls, prefixUrl } = getUrls(event.resourceType, {
     urns: event.lookupBy.urns
   });
