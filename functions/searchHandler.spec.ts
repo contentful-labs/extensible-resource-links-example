@@ -1,9 +1,9 @@
 import { searchHandler } from './searchHandler';
 import * as helpers from './helpers';
 import {
-  createSearchEvent,
   context,
-  createTmdbSearchResponse
+  createTmdbSearchResponse,
+  testSearchEvent
 } from '../test/mocks';
 
 describe('Search handler', () => {
@@ -16,7 +16,7 @@ describe('Search handler', () => {
   it('returns an empty response if TMDB does not return any results', async () => {
     mockApi.mockImplementation(() => Promise.resolve(undefined));
 
-    const response = await searchHandler(createSearchEvent(), context);
+    const response = await searchHandler(testSearchEvent, context);
     expect(response).toEqual({ items: [], pages: {} });
   });
 
@@ -24,7 +24,7 @@ describe('Search handler', () => {
     const tmdbResponse = createTmdbSearchResponse();
     mockApi.mockImplementation(() => Promise.resolve(tmdbResponse));
 
-    const response = await searchHandler(createSearchEvent(), context);
+    const response = await searchHandler(testSearchEvent, context);
 
     expect(response).toHaveProperty('items');
     expect(response.items).toHaveLength(tmdbResponse.results.length);
@@ -49,7 +49,7 @@ describe('Search handler', () => {
       Promise.resolve(createTmdbSearchResponse({ page: 0 }))
     );
 
-    const response = await searchHandler(createSearchEvent(), context);
+    const response = await searchHandler(testSearchEvent, context);
 
     expect(response).toHaveProperty('pages.nextCursor');
     expect(response.pages.nextCursor).toBe('1');
@@ -60,7 +60,7 @@ describe('Search handler', () => {
       Promise.resolve(createTmdbSearchResponse({ page: 2 }))
     );
 
-    const response = await searchHandler(createSearchEvent(), context);
+    const response = await searchHandler(testSearchEvent, context);
 
     expect(response).toHaveProperty('pages.nextCursor');
     expect(response.pages.nextCursor).toBeUndefined();

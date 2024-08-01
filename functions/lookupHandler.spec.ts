@@ -2,8 +2,8 @@ import { lookupHandler } from './lookupHandler';
 import * as helpers from './helpers';
 import {
   context,
-  createLookupEvent,
-  createTmdbLookupResponse
+  createTmdbLookupResponse,
+  testLookupEvent
 } from '../test/mocks';
 
 describe('Lookup handler', () => {
@@ -16,7 +16,7 @@ describe('Lookup handler', () => {
   it('returns an empty response if TMDB does not return any results', async () => {
     mockApi.mockImplementation(() => Promise.resolve(undefined));
 
-    const response = await lookupHandler(createLookupEvent(), context);
+    const response = await lookupHandler(testLookupEvent, context);
     expect(response).toEqual({ items: [], pages: {} });
   });
 
@@ -26,21 +26,24 @@ describe('Lookup handler', () => {
     );
     mockApi.mockImplementationOnce(() => Promise.resolve(undefined));
 
-    const response = await lookupHandler(createLookupEvent(), context);
+    const response = await lookupHandler(testLookupEvent, context);
 
     expect(response).toEqual({ items: [], pages: {} });
   });
 
   it('returns a response with populated items', async () => {
-    const event = createLookupEvent();
     mockApi.mockImplementationOnce(() =>
-      Promise.resolve(createTmdbLookupResponse(Number(event.lookupBy.urns[0])))
+      Promise.resolve(
+        createTmdbLookupResponse(Number(testLookupEvent.lookupBy.urns[0]))
+      )
     );
     mockApi.mockImplementationOnce(() =>
-      Promise.resolve(createTmdbLookupResponse(Number(event.lookupBy.urns[1])))
+      Promise.resolve(
+        createTmdbLookupResponse(Number(testLookupEvent.lookupBy.urns[1]))
+      )
     );
 
-    const response = await lookupHandler(event, context);
+    const response = await lookupHandler(testLookupEvent, context);
 
     expect(response).toHaveProperty('items');
     expect(response.items).toEqual([
