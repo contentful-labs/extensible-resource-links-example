@@ -398,7 +398,7 @@ The function properties are as follows:
 - `path`: This is the path to the transpiled source file of the Function in your bundle. Exposing a `handler` function.
 - `entryFile`: Path pointing to the source file of the Function. Exposing a `handler` function.
 - `allowedNetworks`: A list of endpoints the Function should be allowed to connect to. This is a security feature to prevent unauthorized access to your network.
-- `accepts`: An array of event types the Function can handle. In our case it is one of two event types: `resources.search` or `resources.lookup`
+- `accepts`: An array of event types the Function can handle. In this case we have two event types: `resources.search` and `resources.lookup`.
 
 # Available Scripts
 
