@@ -388,7 +388,7 @@ The definitions of `Movie` and `Person` **Resource Type** representations can be
 
 ## App manifest
 
-The app manifest is a JSON file that descrives the app and its capabilities. It contains a `functions` property which is an array of functions the app can run. Curretly, Contentful Apps can only be assosiated with one function, therefore you can only have one function in the array.
+The app manifest is a JSON file that describes the app and its capabilities. It contains a `functions` property which is an array of functions the app can run. Currently, Contentful Apps can only be associated with one function, therefore you can only have one function in the array.
 
 The function properties are as follows:
 
@@ -398,7 +398,7 @@ The function properties are as follows:
 - `path`: This is the path to the transpiled source file of the Function in your bundle. Exposing a `handler` function.
 - `entryFile`: Path pointing to the source file of the Function. Exposing a `handler` function.
 - `allowedNetworks`: A list of endpoints the Function should be allowed to connect to. This is a security feature to prevent unauthorized access to your network.
-- `accepts`: An array of event types the Function can handle.
+- `accepts`: An array of event types the Function can handle. In our case it is one of two event types: `resources.search` or `resources.lookup`
 
 # Available Scripts
 
